@@ -7,6 +7,8 @@ tags:
 
 The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Below, I present two different style guides: 
 
+![](pictures/int_vs_ext_reports.png)
+
 ## Internal vs. External reports
 
 ### Internal Report Style Guide
