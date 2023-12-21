@@ -1,3 +1,9 @@
+---
+title: "Style Guides for Technical Writing"
+Date: 2023-12-21
+tags: 
+- writing 
+---
 
 The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Below, I present two different style guides: 
 
