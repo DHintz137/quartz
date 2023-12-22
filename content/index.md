@@ -1,7 +1,5 @@
 ---
 title: "Daniel Hintz"
-tags:
-- MOC
 ---
 
 Gidday!
