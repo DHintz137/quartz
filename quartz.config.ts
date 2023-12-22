@@ -32,10 +32,10 @@ const config: QuartzConfig = {
         darkMode: {             // <Key>                                             // <defualt>
           light: "#2E2E2E",     // Primary Background Color                          //  defualt: #161618
           lightgray: "#393639", // Secondary Background Color (search bar color)     //  defualt: #393639
-          gray: "#F1B923",      // Accent Color 1  (subitle text color)  
+          gray: "#F1B923",      // Accent Color 1  (subitle text, read time color)  
           darkgray: "#d4d4d4",  // Accent Color 2 (main text color)  
           dark: "#ebebec",      // Text Color (title text color)   
-          secondary: "#B8C4BC", // Highlight/Detail Color (link text color)  
+          secondary: "#F6F4D6", // Highlight/Detail Color (link text/ website name color)  
           tertiary: "#84a59d",
           highlight: "rgba(143, 159, 169, 0.15)",  // or is hex its #8F9FA9
         },
