@@ -29,13 +29,13 @@ const config: QuartzConfig = {
           tertiary: "#84a59d",
           highlight: "rgba(143, 159, 169, 0.15)",
         },
-        darkMode: {
-          light: "#4F483E",          //  defualt: #161618
-          lightgray: "#393639",      //  defualt: #393639
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
+        darkMode: {             // <Key>                                             // <defualt>
+          light: "#2E2E2E",     // Primary Background Color                          //  defualt: #161618
+          lightgray: "#393639", // Secondary Background Color (search bar color)     //  defualt: #393639
+          gray: "#B2A68C",      // Accent Color 1  (subitle text color)  
+          darkgray: "#d4d4d4",  // Accent Color 2 (main text color)  
+          dark: "#ebebec",      // Text Color (title text color)   
+          secondary: "#B8C4BC", // Highlight/Detail Color (link text color)  
           tertiary: "#84a59d",
           highlight: "rgba(143, 159, 169, 0.15)",  // or is hex its #8F9FA9
         },
