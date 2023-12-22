@@ -19,13 +19,13 @@ const config: QuartzConfig = {
         code: "IBM Plex Mono",
       },
       colors: {
-        lightMode: {             // <Key>                       //  <defualt>
-          light: "#f5f5dc",      // Primary Background Color    //  "#faf8f8"
-          lightgray: "#c0c0c0",  // Secondary Background Color  //  "#e5e5e5"
-          gray: "#008080",       // Accent Color 1              //  "#b8b8b8"
-          darkgray: "#ff7f50",   // Accent Color 2              //  "#4e4e4e"
-          dark: "#2F4F4F",       // Text Color                  //  "#284b63"
-          secondary: "#e6e8fa",  // Highlight/Detail Color      //  "#284b63"
+        lightMode: {             // <Key>                                           //  <defualt>
+          light: "#faf8f8",      // Primary Background Color                        //  "#faf8f8"
+          lightgray: "#e5e5e5",  // Secondary Background Color (search bar color)   //  "#e5e5e5"
+          gray: "#b8b8b8",       // Accent Color 1  (subitle text color)            //  "#b8b8b8"
+          darkgray: "#4e4e4e",   // Accent Color 2 (main text color)                //  "#4e4e4e"
+          dark: "#284b63",       // Text Color (title text color)                   //  "#284b63"
+          secondary: "#284b63",  // Highlight/Detail Color (link text color)        //  "#284b63"
           tertiary: "#84a59d",
           highlight: "rgba(143, 159, 169, 0.15)",
         },
