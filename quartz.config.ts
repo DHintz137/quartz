@@ -3,7 +3,7 @@ import * as Plugin from "./quartz/plugins"
 
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "🛤️ Prior Paths",      
+    pageTitle: "Daniel Hintz",      
     enableSPA: true,
     enablePopovers: true,
     analytics: {
