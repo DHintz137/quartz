@@ -2,72 +2,6 @@
 
 // put your custom CSS here!
 
-@use "./variables.scss" as *;
-
-body[data-slug="index"] img {
-  filter: invert(0%);
-  opacity: 0.85;
-}
-
-body {
-  position: relative;
-  min-height: 100vh;
-}
-
-#texture {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: url("/static/texture.png");
-  mix-blend-mode: hard-light;
-  pointer-events: none;
-  z-index: 999;
-}
-
-[saved-theme="dark"] #texture {
-  mix-blend-mode: overlay;
-}
-
-[saved-theme="dark"] body[data-slug="index"] img[src*="banner.svg"] {
-  filter: invert(100%);
-}
-
-.left {
-  display: grid !important;
-  gap: 1.5rem !important;
-  grid-template-columns: 1fr;
-  grid-template-rows: min-content min-content min-content min-content;
-  align-items: center;
-
-  .page-title {
-    grid-area: 1 / 1 / 2 / 3;
-  }
-
-  .search {
-    grid-area: 2 / 1 / 3 / 2;
-  }
-
-  .darkmode {
-    grid-area: 2 / 2 / 3 / 3;
-  }
-
-  .toc {
-    grid-row: 3;
-    grid-column: 1 / 3;
-  }
-
-  .recent-notes:nth-last-child(2) {
-    grid-area: 3 / 1 / 3 / 3;
-  }
-
-  .recent-notes:nth-last-child(1) {
-    grid-area: 4 / 1 / 4 / 3;
-  }
-
-  @media all and (max-width: $fullPageWidth) {
-    display: flex !important;
-  }
-}
 
 hr {
   overflow: visible;
@@ -87,18 +21,6 @@ hr {
     background: var(--light);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 pre.poetry {
