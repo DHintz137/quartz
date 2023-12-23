@@ -36,8 +36,8 @@ const config: QuartzConfig = {
           darkgray: "#d4d4d4",  // Accent Color 2 (main text color)  
           dark: "#ebebec",      // Text Color (title text color)   
           secondary: "#F1B923", // Highlight/Detail Color (link text/ website name color)  
-          tertiary: "#c2f122",  // Highlight color when hovering over website tile // flamingo: #F15322
-          highlight: "#9EC9DB",  // or is hex its #8F9FA  rgba(143, 159, 169, 0.15)9
+          tertiary: "#156A59",  // Highlight color when hovering over website tile // flamingo: #F15322
+          highlight: "#9EC9DB",  // or is hex its #8F9FA  rgba(143, 159, 169, 0.15) #8F9FA9
         },
       },
     },
