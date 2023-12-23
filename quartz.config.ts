@@ -44,6 +44,7 @@ const config: QuartzConfig = {
   },
   plugins: {
     transformers: [
+      Plugin.Poetry(),
       Plugin.FrontMatter(),
       Plugin.TableOfContents(),
       Plugin.CreatedModifiedDate({
