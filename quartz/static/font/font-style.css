@@ -3,9 +3,8 @@
 @font-face {
   font-family: "biro_script_standardRgus";
   src:
-    url("font/biro_script_standard_us.woff2") format("woff2"),
-    url("font/biro_script_standard_us.woff") format("woff");
+    url("biro_script_standard_us.woff2") format("woff2"),
+    url("biro_script_standard_us.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
-
