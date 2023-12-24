@@ -2,7 +2,9 @@
 title: "" 
 ---
 
+```poetry
 G'day!
+```
 
 I’m Dan, a kiwi abroad pursuing a masters in statistics at the University of Wyoming and an aspiring data scientist. With 4 years experience with scientific programming as well as mathematical and statistical modeling, my peers know me for my breadth and depth with modeling methodologies and translating them into concise scientific reports to bring about insights.
 
