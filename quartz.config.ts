@@ -14,7 +14,7 @@ const config: QuartzConfig = {
     defaultDateType: "created",
     theme: {
       typography: {
-        header: "Eczar", //Eczar  //Schibsted Grotesk
+        header: "Futura", // Eczar // Futura // Schibsted Grotesk
         body: "Source Sans Pro",
         code: "IBM Plex Mono",
       },
@@ -22,11 +22,11 @@ const config: QuartzConfig = {
         lightMode: {             // <Key>                                           //  <defualt>
           light: "#faf8f8",      // Primary Background Color                        //  "#faf8f8"
           lightgray: "#e5e5e5",  // Secondary Background Color (search bar color)   //  "#e5e5e5"
-          gray: "#b8b8b8",       // Accent Color 1  (subitle text color)            //  "#b8b8b8"
+          gray: "#939292",       // Accent Color 1  (subitle text color)            //  "#b8b8b8"
           darkgray: "#4e4e4e",   // Accent Color 2 (main text color)                //  "#4e4e4e"
           dark: "#284b63",       // Text Color (title text color)                   //  "#284b63"
           secondary: "#284b63",  // Highlight/Detail Color (link text color)        //  "#284b63"
-          tertiary: "#84a59d",
+          tertiary: "#78B113",   // defualt: 84a59d
           highlight: "rgba(143, 159, 169, 0.15)",
         },
         darkMode: {             // <Key>                                             // <defualt>
