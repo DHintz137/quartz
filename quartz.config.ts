@@ -22,7 +22,7 @@ const config: QuartzConfig = {
         lightMode: {             // <Key>                                           //  <defualt>
           light: "#faf8f8",      // Primary Background Color                        //  "#faf8f8"
           lightgray: "#e5e5e5",  // Secondary Background Color (search bar color)   //  "#e5e5e5"
-          gray: "#939292",       // Accent Color 1  (subitle text color)            //  "#b8b8b8"
+          gray: "#57B9E9",       // Accent Color 1  (subitle text color)            //  #939292
           darkgray: "#4e4e4e",   // Accent Color 2 (main text color)                //  "#4e4e4e"
           dark: "#284b63",       // Text Color (title text color)                   //  "#284b63"
           secondary: "#284b63",  // Highlight/Detail Color (link text color)        //  "#284b63"
