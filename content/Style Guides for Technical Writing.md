@@ -53,7 +53,6 @@ The Internal Report Style Guide is designed for data science teams. It emphasize
 - Language: Technical but accessible to all team members with varying expertise.
 - Structure: Logical flow with clearly defined sections, headings, and subheadings.
 
----
 
 ### External Report Style Guide
 
@@ -96,6 +95,5 @@ The External Report Style Guide is tailored for clients or non-technical stakeho
 - Language: Non-technical, emphasizing clarity and readability.
 - Structure: Well-organized with a clear introduction, body, and conclusion.
 
----
 
 Both style guides serve distinct purposes: the Internal Guide for in-depth technical collaboration and the External Guide for clear, impactful communication with stakeholders.
