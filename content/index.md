@@ -21,3 +21,9 @@ I am passionate about working with domain experts to solve problems and guide th
 Cheers,
 Dan
 ```
+
+<!-- Embed Plotly Chart -->
+<!--
+<iframe src="https://chart-studio.plotly.com/~dhintz1/1.embed" width="640"
+height="480" frameborder="0" allowfullscreen></iframe>
+-->
