@@ -1,5 +1,6 @@
 ---
 title: "Welcome" 
+date: 2023-12-21
 ---
 
 <img src="./banner.svg" width="500" height="250">

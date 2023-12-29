@@ -1,6 +1,6 @@
 ---
 title: "Style Guides for Technical Writing"
-Date: 2023-12-21
+date: 2023-12-21
 tags: 
 - writing 
 ---
