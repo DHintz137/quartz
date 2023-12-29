@@ -111,49 +111,19 @@ mh.mcmc <- function(n.s, start.p, start.hessian, burnin, seed = 23, initial_scal
 }
 ```
 
+### Test 
+
+<!-- Printed as inline-->
+$$f(x) = \int_{-\infty}^\infty f\hat(\xi),e^{2 \pi i \xi x} \,d\xi$$
+
+<!--Printed as code-->
 $$
 f(x) = \int_{-\infty}^\infty
     f\hat(\xi),e^{2 \pi i \xi x}
     \,d\xi
 $$
 
-$$
-\begin{table}[!h]
-\centering
-\begin{tabular}{r|r|r|r}
-\hline
-mean & sd & lower & upper\\
-\hline
--17.984 & 20.872 & -58.703 & 22.852\\
-\hline
-0.057 & 0.030 & -0.003 & 0.116\\
-\hline
--0.086 & 0.058 & -0.201 & 0.027\\
-\hline
--0.036 & 0.167 & -0.360 & 0.293\\
-\hline
--0.432 & 0.220 & -0.871 & 0.000\\
-\hline
--0.017 & 0.098 & -0.209 & 0.175\\
-\hline
-0.889 & 0.084 & 0.723 & 1.055\\
-\hline
--0.195 & 0.137 & -0.468 & 0.072\\
-\hline
-0.237 & 0.136 & -0.028 & 0.507\\
-\hline
--0.024 & 0.233 & -0.475 & 0.427\\
-\hline
-0.165 & 0.207 & -0.244 & 0.566\\
-\hline
-0.156 & 0.162 & -0.160 & 0.475\\
-\hline
-0.433 & 0.188 & 0.061 & 0.804\\
-\hline
--1.470 & 0.503 & -2.448 & -0.480\\
-\hline
-16.120 & 1.489 & 13.479 & 19.287\\
-\hline
-\end{tabular}
-\end{table}
-$$
+
+
+<!-- Printed as inline-->
+$e^{i\pi} = -1$
