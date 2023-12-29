@@ -124,7 +124,7 @@ y = dat[,1]; X = as.matrix(cbind(Int = rep(1,n),dat[,-1]))
 p = ncol(X); ee = 1e-16 
 ```
 
-The data we are using is from **Lohman, T, 1992**[^1] 
+The data we are using is from **Lohman, T, 1992**[^2] 
 
 ```r
 samp.o <- function(t.s) {
