@@ -9,6 +9,8 @@ export const sharedPageComponents: SharedLayout = {
     links: {
       GitHub: "https://github.com/DHintz137",
       "LinkedIn": "https://www.linkedin.com/in/daniel-hintz-rstat/",
+      "Email" : "dhintz1@uwyo.edu",
+      "Resume": "https://github.com/DHintz137/quartz/blob/v4/content/Docs/Daniel_Hintz_resume.pdf"
     },
   }),
 }

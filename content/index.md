@@ -5,19 +5,21 @@ date: 2023-12-21
 
 <img src="./banner.svg" width="500" height="250">
 
-<!--
-<img src="./banner.svg" width="850" height="315">
--->
 ```poetry
 G'day!
 ```
 
-I’m Dan, a Kiwi abroad pursuing a master's in statistics at the University of Wyoming and an aspiring data scientist. With four years of experience with scientific programming and mathematical and statistical modeling, my peers know me for my breadth and depth in modeling methodologies and translating them into concise scientific reports to bring about insights.
+I'm Dan, a Kiwi currently expanding my horizons in the United States. I'm pursuing a Master's in Statistics at the University of Wyoming and am an aspiring data scientist. You can learn more about my journey in the section [[About|A Little About Me]].
 
-My academic background with a master’s in economics and, soon to be, a master's in statistics has given me strong theoretical underpinnings for the work I have completed in the field as a data scientist.  I have had multiple hands-on work experiences as a data scientist: a graduate researcher at the Advanced Research Computing Center at the University of Wyoming, an Intern bioinformatician at the [Wyoming Public Health Lab](https://github.com/DHintz137/WastewaterSurveillancePoster) 
-, and an intern data scientist at Western EcoSystems Technologies. Currently, I am working on a collaborative project with the Mayo Clinic and [Argonne National Labs](https://github.com/DHintz137/Cancer_AI_Poster/tree/main) in developing an AI medical software engine to predict the progression of colorectal cancer in patients. For a taste of what kind of modeling I do, see [[MCMC_from_scratch|MCMC: An Implementation from Scratch]].
+My passion for data science is backed by four years of experience in scientific programming, mathematical, and statistical modeling. I'm known among my peers for my ability in applying a wide range of modeling methodologies and distilling them into concise scientific reports that unveil meaningful insights.
 
-I am passionate about working with domain experts to solve problems and guide them to the best modeling strategies for the job. I also love the camaraderie and personal growth that comes from collaborating with my peers. Sharing knowledge and experiences and jointly overcoming a challenge is a true joy.
+My academic pursuits have been diverse yet focused. I hold a Master’s in Economics, and I'm on the verge of completing my second Master's in Statistics. This strong theoretical foundation has been instrumental in my practical work as a data scientist. My hands-on experience includes roles such as a graduate researcher at the University of Wyoming's Advanced Research Computing Center, an intern bioinformatician at the [Wyoming Public Health Lab](https://github.com/DHintz137/WastewaterSurveillancePoster), and an intern data scientist at Western EcoSystems Technologies.
+
+One of my current exciting projects involves collaborating with the Mayo Clinic and [Argonne National Labs](https://github.com/DHintz137/Cancer_AI_Poster/tree/main). Here, I'm contributing to the development of an AI-driven medical software engine, designed to predict the progression of colorectal cancer in patients. This project forms a part of my thesis work and is a significant step in my data science journey.
+
+Curious about what to expect from my website? Take a look at my article on [[MCMC_from_scratch|MCMC: An Implementation from Scratch]]. And there's more to come! Stay tuned for upcoming posts on diverse topics like TiDE Time series forecasting in Python, implementing K-means in C++ from scratch, exploring LLMs and the Llama2 API in Python, and crafting visualizations with D3.js.
+
+At the core of my professional life is a deep-seated passion for working alongside domain experts. I enjoy helping them understand and apply the best modeling strategies for their specific challenges. I find this process to hone my own craft from having to apply my knowledge to new problems as well as an inherent richness in learning something new from a domain expert. Sharing knowledge, experiences and collectively overcoming obstacles is, for me, the essence of what makes this field so rewarding.
 
 
 
