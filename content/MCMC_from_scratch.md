@@ -1,8 +1,8 @@
 ---
-title: "MCMC: An Implementation from Scratch"
+title: Metropolis-Hastings MCMC from Scratch
 date: 2023-12-28
-tags: 
-- Bayesian 
+tags:
+  - Bayesian
 ---
 
 
@@ -24,13 +24,6 @@ If not already clear, Markov Chain Monte Carlo (MCMC) is a tool for implementing
 
 While some might debate you on this, a common perspective is that neither Bayesian nor Frequentist statistics is necessarily better; what's most important is one recognizes that they are different in implementation but, more importantly, different in their philosophy, the nuances of which will not be covered here. While Frequentist vs Bayesian Statistics is an important discussion, it is also not something you can knock out in 5 minutes. For an extremely brief comparison, see the table below on the difference in Frequentist vs. Bayesian statistics.
 
-
-<!--
-<figure>
-  <img src="pictures/bays_vs_freq2.png" width="600" height="500" alt="Description of Image">
-  <figcaption>Introna, Michele, et al. "Bayesian statistics in anesthesia practice: a tutorial for anesthesiologists." Journal of anesthesia 36.2 (2022): 294-302.</figcaption>
-</figure>
--->
 
 &nbsp;
 
@@ -107,7 +100,7 @@ While some might debate you on this, a common perspective is that neither Bayesi
 </body>
 </html>
 
-(Introna, Michele, et al, 2022)[^2] 
+**(Introna, Michele, et al, 2022)**[^2] 
 
 &nbsp;
 
@@ -156,6 +149,7 @@ $$
 
 Once these five steps are completed, we can begin to write the MCMC algorithm. 
 
+<a name="#1-reading-in-the-data"></a>
 ### 1. Reading in the Data
 ```r
 dat = read.csv("data/bodyfat.csv");n = nrow(dat)
@@ -167,38 +161,31 @@ p = ncol(X); ee = 1e-16
 
 The data is on the percent body fat for 252 adult males, where the objective is to describe 13 simple body measurements in a multiple regression model; the data was collected from **Lohman, T, 1992**[^3] .
 
-<!--
+
 <!DOCTYPE html>
 <html>
+<body>
 <head>
 <style>
-.body {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-family: Arial, sans-serif;
+ table.ExtraPadRight {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+    border-collapse: separate;
+    border-spacing: 0px 0;
+    table-layout: fixed;
   }
-  .body td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  .body tr:nth-child(even) td {
-    background-color: #f9f9f9;
-  }
-  .body tr:hover td {
-    background-color: #f1f1f1;
-  }
-  .body caption {
-    padding: 8px;
-    font-size: larger;
-    caption-side: top;
+
+  .ExtraPadRight th, .ExtraPadRight td {
+    text-align: center; /* Align text to the center */
+    padding: 5px 10px;
+    font-size: 14.5px;
+    width: 50%; 
   }
 </style>
 </head>
 <body>
-
-<table class="body">
+<table class = "ExtraPadRight">
 <caption>Potential Predictors of Body Fat - Data from Lohman, T, 1992</caption>
 <tbody>
   <tr>
@@ -234,99 +221,9 @@ The data is on the percent body fat for 252 adult males, where the objective is 
 
 </body>
 </html>
--->
 
 
 
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-/* Default styles (Light mode) */
-.body {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-family: Arial, sans-serif;
-    background-color: #ffffff; /* Light background */
-    color: #000000; /* Dark text */
-}
-.body td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #F6F4D6;
-}
-.body tr:nth-child(even) td {
-    background-color: #f9f9f9;
-}
-.body tr:hover td {
-    background-color: #f1f1f1;
-}
-.body caption {
-    padding: 8px;
-    font-size: larger;
-    caption-side: top;
-}
-
-/* Dark mode specific styles */
-@media (prefers-color-scheme: dark) {
-  .body, .body caption {
-    background-color: #4F483E; /* Dark background */
-    color: #F6F4D6; /* Light text */
-  }
-  .body td {
-    border-bottom: 1px solid #464D58; /* Darker border color */
-  }
-  .body tr:nth-child(even) td {
-    background-color: #1a1a1a; /* Darker shade for even rows */
-  }
-  .body tr:hover td {
-    background-color: #4F483E; /* Darker shade on hover */
-  }
-}
-</style>
-</head>
-<body>
-
-<table class="body">
-<caption>Potential Predictors of Body Fat - Data from Lohman, T, 1992</caption>
-<tbody>
-<tr>
-    <td>1. Age (years)</td>
-    <td>8. Thigh (cm)</td>
-  </tr>
-  <tr>
-    <td>2. Weight (pounds)</td>
-    <td>9. Knee (cm)</td>
-  </tr>
-  <tr>
-    <td>3. Height (inches)</td>
-    <td>10. Ankle (cm)</td>
-  </tr>
-  <tr>
-    <td>4. Neck (cm)</td>
-    <td>11. Extended biceps (cm)</td>
-  </tr>
-  <tr>
-    <td>5. Chest (cm)</td>
-    <td>12. Forearm (cm)</td>
-  </tr>
-  <tr>
-    <td>6. Abdomen (cm)</td>
-    <td>13. Wrist (cm)</td>
-  </tr>
-  <tr>
-    <td>7. Hip (cm)</td>
-    <td></td> <!-- Empty cell for alignment -->
-  </tr>
-</tbody>
-</table>
-
-</body>
-</html>
-
-
-&nbsp;
 ### 2. Write our own Sample Function 
 
 Later, we will need a function to summarise the results from the posterior distributions, see `samp.o`.
@@ -380,7 +277,7 @@ opt$par
 <style>
   .opt td {
     border-top: 2px solid #57B9E9;
-    text-align: right;
+    text-align: left;
     font-size: 15px; /* Adjust this value to change the font size of table data */
   }
   .opt th {
@@ -467,57 +364,11 @@ where the posterior is simply the prior times the likelihood, while on a log sca
 lpost <- function(pars) llike(pars) + lprior(pars)
 ```
 
-## Implementation (a) 
+<a name="implementation-a"></a> 
+## Implementation (a)
 
-<!--
-	Let's break down its components:
 
-1. **Function Definition**: `mh.mcmc` is the name of the function. It takes several arguments:
-    - `n.s`: Number of samples to draw.
-    - `start.p`: Starting parameter values.
-    - `start.hessian`: The Hessian matrix at the starting point, used to define the proposal distribution's covariance.
-    - `burnin`: Number of burn-in iterations to discard.
-    - `seed`: Seed for random number generation.
-    - `initial_scale_par`: Initial scale parameter for the proposal distribution.
-    - `n.chain`: Number of MCMC chains to run.
-    - `thinning`: Thinning interval for the MCMC samples.
-    - `par_names`: Names of the parameters.
-    - `target_acc_rate`: Target acceptance rate for the adaptive algorithm.
-    - `learning_rate`: Learning rate for adapting the scale parameter.
-
-2. **Initialization**:
-    - The function begins by determining the number of parameters (`np`) and setting up matrices to store the MCMC draws.
-    - Initializes the `scale_par` for the proposal distribution.
-    - Sets the seed for reproducibility.
-
-3. **MCMC Algorithm**:
-    - The function runs `n.chain` separate MCMC chains.
-    - For each chain, it initializes the chain's draws and sets up an acceptance count.
-    - `C` is the negative inverse of the Hessian matrix times the scale parameter, defining the covariance of the proposal distribution.
-
-4. **Sampling Loop**:
-    - For each iteration after the first, it proposes a new sample (`prop`) using a multivariate normal distribution.
-    - It calculates an acceptance ratio based on the difference in log-posterior (`lpost`) between the proposed and current sample.
-    - The proposed sample is accepted or rejected based on this ratio.
-
-5. **Adaptive Scaling**:
-    - After the burn-in period, the algorithm adapts the scale parameter based on the acceptance rate, aiming to achieve the target acceptance rate.
-    - It updates the scale parameter and the covariance matrix of the proposal distribution.
-
-6. **Thinning and Burn-in Removal**:
-    - After completing all iterations, it thins the samples and removes the burn-in samples.
-
-7. **Post-Processing**:
-    - If parameter names are provided, they are assigned to the columns of the chains.
-    - `tab` is a table of summary statistics calculated using `samp.o` function (which is not defined in this snippet).
-    - The function returns a list containing the MCMC chains, the summary table, the final acceptance rate, and the vector of scale parameters used.
-
-8. **Dependencies**:
-    - The function uses the `mvtnorm` library for drawing samples from a multivariate normal distribution.
--->
-
-We will start off with a simpler implementation, which we will denote **(a)**
-with manual scaling, Single Chain, Burn-in, No thinning,  and a Jeffrey's Prior.
+We will start off with a simpler implementation, which we will denote [Implementation (a)](#implementation-a) with manual scaling, Single Chain, Burn-in, No thinning,  and a Jeffrey's Prior.
 
 First, I will present the code and then explain the details see the foldable code chunk **(a)**, below:
 
@@ -539,10 +390,10 @@ First, I will present the code and then explain the details see the foldable cod
 >     draws[t, ] = draws[t -1, ] }} # reject #
 > tab.MCMC.a <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
 > row.names(tab.MCMC.a) <- par_names; tab.MCMC.a
-> (acc = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+> (acc.a = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
 > ```
 
-To start, **(a)** uses Jeffrey's Prior, which is an improper, vague prior; it is improper because its integral does not sum to 1, which is a requirement for valid PDFs.  However, its density function is proportional to the square root of the determinant of the Fisher information matrix:
+To start, [Implementation (a)](#implementation-a) uses Jeffrey's Prior, which is an improper, vague prior; it is improper because its integral does not sum to 1, which is a requirement for valid PDFs.  However, its density function is proportional to the square root of the determinant of the Fisher information matrix:
 
 $$
 p(\vec{\theta}) \propto \sqrt{\operatorname{det} \mathcal{I}(\vec{\theta})}
@@ -552,7 +403,7 @@ As already stated, Jeffrey's Prior is vague prior, which is also known as a flat
 
 We are using the multivariate normal distribution with `rmvnorm` to generate proposal values for each of the parameters, and scaling the variance covariance matrix `C` by  `scale_par` to help adjust the acceptance ratio towards the optimal acceptance rate of 23.4 that holds for inhomogeneous target distributions $\pi\left(x^{(d)}\right)=\Pi_{i=1}^d C_i f\left(C_i x_i\right)$ (Roberts and Rosenthal, 2001)[^4].
 
-For implementation **(a)**, we get an acceptance ratio of `0.2267`; this was achieved in part by manually choosing `scale_par` to get an acceptance ratio closer to the target of 0.234. 
+For [Implementation (a)](#implementation-a), we get an acceptance ratio of `0.2267`; this was achieved in part by manually choosing `scale_par` to get an acceptance ratio closer to the target of 0.234. 
 
 Below, we can print our results
 
@@ -564,27 +415,27 @@ tab.MCMC.a
 <html>
 <head>
 <style>
-  .tabA table {
-    margin-left: auto; /* Centers the table horizontally by automatically adjusting the left margin */
-    margin-right: auto; /* Centers the table horizontally by automatically adjusting the right margin */
-    width: 80%; /* Sets the table width to 80% of the parent element's width */
+ table.ExtraPadRight {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+    border-collapse: separate;
+    border-spacing: 0px 0;
+    table-layout: fixed;
   }
-  .tabA th {
-    text-align: left; /* For left-aligned table headers */
-    padding: 5px;
-    font-size: 17px; /* Set font size for table headers */
-  }
-  .tabA td {
-    text-align: right;
-    padding: 5px;
-    font-size: 14.5px; /* Set font size for table cells */
+
+  .ExtraPadRight th, .ExtraPadRight td {
+    text-align: center; /* Align text to the center */
+    padding: 5px 10px;
+    font-size: 14.5px;
+    width: 50%; 
   }
 </style>
 </head>
 <body>
-<table class="tabA">
-<thead>
+<table class = "ExtraPadRight"><thead>
   <tr>
+   <th style="text-align:left;"> Parameters</th>
    <th style="text-align:right;"> Mean </th>
    <th style="text-align:right;"> SD </th>
    <th style="text-align:right;"> Lower </th>
@@ -593,110 +444,128 @@ tab.MCMC.a
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> -17.890911 </td>
-   <td style="text-align:right;"> 20.698141 </td>
-   <td style="text-align:right;"> -57.689702 </td>
-   <td style="text-align:right;"> 23.027826 </td>
+   <td style="text-align:left;"> beta_0 </td>
+   <td style="text-align:right;"> -18.043 </td>
+   <td style="text-align:right;"> 20.961 </td>
+   <td style="text-align:right;"> -58.974 </td>
+   <td style="text-align:right;"> 23.104 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.056487 </td>
-   <td style="text-align:right;"> 0.030255 </td>
-   <td style="text-align:right;"> -0.003148 </td>
-   <td style="text-align:right;"> 0.115854 </td>
+   <td style="text-align:left;"> beta_1 </td>
+   <td style="text-align:right;"> 0.057 </td>
+   <td style="text-align:right;"> 0.031 </td>
+   <td style="text-align:right;"> -0.003 </td>
+   <td style="text-align:right;"> 0.118 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.086330 </td>
-   <td style="text-align:right;"> 0.058003 </td>
-   <td style="text-align:right;"> -0.197201 </td>
-   <td style="text-align:right;"> 0.028019 </td>
+   <td style="text-align:left;"> beta_2 </td>
+   <td style="text-align:right;"> -0.087 </td>
+   <td style="text-align:right;"> 0.058 </td>
+   <td style="text-align:right;"> -0.200 </td>
+   <td style="text-align:right;"> 0.029 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.036785 </td>
-   <td style="text-align:right;"> 0.167412 </td>
-   <td style="text-align:right;"> -0.362524 </td>
-   <td style="text-align:right;"> 0.289261 </td>
+   <td style="text-align:left;"> beta_3 </td>
+   <td style="text-align:right;"> -0.035 </td>
+   <td style="text-align:right;"> 0.166 </td>
+   <td style="text-align:right;"> -0.356 </td>
+   <td style="text-align:right;"> 0.290 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.434688 </td>
-   <td style="text-align:right;"> 0.222016 </td>
-   <td style="text-align:right;"> -0.871323 </td>
-   <td style="text-align:right;"> -0.004617 </td>
+   <td style="text-align:left;"> beta_4 </td>
+   <td style="text-align:right;"> -0.431 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> -0.868 </td>
+   <td style="text-align:right;"> 0.009 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.016554 </td>
-   <td style="text-align:right;"> 0.098487 </td>
-   <td style="text-align:right;"> -0.208411 </td>
-   <td style="text-align:right;"> 0.176035 </td>
+   <td style="text-align:left;"> beta_5 </td>
+   <td style="text-align:right;"> -0.015 </td>
+   <td style="text-align:right;"> 0.096 </td>
+   <td style="text-align:right;"> -0.201 </td>
+   <td style="text-align:right;"> 0.175 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.890505 </td>
-   <td style="text-align:right;"> 0.084205 </td>
-   <td style="text-align:right;"> 0.725644 </td>
-   <td style="text-align:right;"> 1.055462 </td>
+   <td style="text-align:left;"> beta_6 </td>
+   <td style="text-align:right;"> 0.889 </td>
+   <td style="text-align:right;"> 0.085 </td>
+   <td style="text-align:right;"> 0.719 </td>
+   <td style="text-align:right;"> 1.052 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.194815 </td>
-   <td style="text-align:right;"> 0.137902 </td>
-   <td style="text-align:right;"> -0.468699 </td>
-   <td style="text-align:right;"> 0.074886 </td>
+   <td style="text-align:left;"> beta_7 </td>
+   <td style="text-align:right;"> -0.194 </td>
+   <td style="text-align:right;"> 0.139 </td>
+   <td style="text-align:right;"> -0.470 </td>
+   <td style="text-align:right;"> 0.075 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.232567 </td>
-   <td style="text-align:right;"> 0.138491 </td>
-   <td style="text-align:right;"> -0.040740 </td>
-   <td style="text-align:right;"> 0.497574 </td>
+   <td style="text-align:left;"> beta_8 </td>
+   <td style="text-align:right;"> 0.241 </td>
+   <td style="text-align:right;"> 0.138 </td>
+   <td style="text-align:right;"> -0.026 </td>
+   <td style="text-align:right;"> 0.512 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.020001 </td>
-   <td style="text-align:right;"> 0.231950 </td>
-   <td style="text-align:right;"> -0.471828 </td>
-   <td style="text-align:right;"> 0.433188 </td>
+   <td style="text-align:left;"> beta_9 </td>
+   <td style="text-align:right;"> -0.025 </td>
+   <td style="text-align:right;"> 0.234 </td>
+   <td style="text-align:right;"> -0.492 </td>
+   <td style="text-align:right;"> 0.433 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.171464 </td>
-   <td style="text-align:right;"> 0.207194 </td>
-   <td style="text-align:right;"> -0.230577 </td>
-   <td style="text-align:right;"> 0.574587 </td>
+   <td style="text-align:left;"> beta_10 </td>
+   <td style="text-align:right;"> 0.166 </td>
+   <td style="text-align:right;"> 0.212 </td>
+   <td style="text-align:right;"> -0.251 </td>
+   <td style="text-align:right;"> 0.585 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.158884 </td>
-   <td style="text-align:right;"> 0.161505 </td>
-   <td style="text-align:right;"> -0.155462 </td>
-   <td style="text-align:right;"> 0.474175 </td>
+   <td style="text-align:left;"> beta_11 </td>
+   <td style="text-align:right;"> 0.155 </td>
+   <td style="text-align:right;"> 0.162 </td>
+   <td style="text-align:right;"> -0.162 </td>
+   <td style="text-align:right;"> 0.470 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.432406 </td>
-   <td style="text-align:right;"> 0.187672 </td>
-   <td style="text-align:right;"> 0.053277 </td>
-   <td style="text-align:right;"> 0.797462 </td>
+   <td style="text-align:left;"> beta_12 </td>
+   <td style="text-align:right;"> 0.429 </td>
+   <td style="text-align:right;"> 0.187 </td>
+   <td style="text-align:right;"> 0.068 </td>
+   <td style="text-align:right;"> 0.805 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -1.480241 </td>
-   <td style="text-align:right;"> 0.498895 </td>
-   <td style="text-align:right;"> -2.459252 </td>
-   <td style="text-align:right;"> -0.498583 </td>
+   <td style="text-align:left;"> beta_13 </td>
+   <td style="text-align:right;"> -1.484 </td>
+   <td style="text-align:right;"> 0.509 </td>
+   <td style="text-align:right;"> -2.490 </td>
+   <td style="text-align:right;"> -0.498 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 16.226183 </td>
-   <td style="text-align:right;"> 1.464961 </td>
-   <td style="text-align:right;"> 13.654965 </td>
-   <td style="text-align:right;"> 19.337703 </td>
+   <td style="text-align:left;"> sigma_sq </td>
+   <td style="text-align:right;"> 16.156 </td>
+   <td style="text-align:right;"> 1.476 </td>
+   <td style="text-align:right;"> 13.479 </td>
+   <td style="text-align:right;"> 19.295 </td>
   </tr>
 </tbody>
 </table>
+</body>
 </html>
 
 > [!tip] Reminder
 > 
->  The posterior distribution is what we get out of a Bayesian analysis; we get one distribution for each parameter.
+>  The posterior distribution is what we get out of a Bayesian analysis; we get one distribution for each parameter. Hence see <a href="#plotly-weight-histogram">beta_3 Posterior</a> below.
 
 Thus, We can plot the posterior distribution for Weight ($\beta_3$), in which case we can see that the mode of the distribution is similar to the mean point estimate presented in the table above (-0.036). 
 
-<iframe src="https://chart-studio.plotly.com/~dhintz1/4/#/" width="640"
+
+<iframe id="plotly-weight-histogram" src="https://chart-studio.plotly.com/~dhintz1/4/#/" width="640"
 height="480" frameborder="0" allowfullscreen></iframe>
 
-Next in **(b)**, instead of using a Jeffries Prior, we can create `priors_list`, and specify a prior for each parameter. 
+Next in [Implementation (b)](#implementation-b), instead of using a Jeffries Prior, we can create `priors_list`, and specify a prior for each parameter. 
 
+<a name="implementation-b"></a> 
 ## Implementation (b)
 
 > [!info]- (b):  Manual scaling, Single chain, Burn-in, No thinning, Uniform and Normal priors
@@ -736,10 +605,10 @@ Next in **(b)**, instead of using a Jeffries Prior, we can create `priors_list`,
 >     draws[t, ] = draws[t -1, ] }} # reject #
 > tab.MCMC.b <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
 > row.names(tab.MCMC.b) <- par_names; tab.MCMC.b
-> (acc = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+> (acc.b = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
 > ```
 
-Notice we print a summary table of the posterior distributions, the point estimates we get our different from **(a)**.
+Notice we print a summary table of the posterior distributions, the point estimates we get our different from [Implementation (a)](#implementation-a). Note, we also get a different acceptance rate of `0.227`.
 
 ```r
 tab.MCMC.b
@@ -750,27 +619,27 @@ tab.MCMC.b
 <html>
 <head>
 <style>
-  .tabB table {
-    margin-left: auto; /* Centers the table horizontally by automatically adjusting the left margin */
-    margin-right: auto; /* Centers the table horizontally by automatically adjusting the right margin */
-    width: 80%; /* Sets the table width to 80% of the parent element's width */
+ table.ExtraPadRight {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+    border-collapse: separate;
+    border-spacing: 0px 0;
+    table-layout: fixed;
   }
-  .tabB th {
-    text-align: left; /* For left-aligned table headers */
-    padding: 5px;
-    font-size: 17px; /* Set font size for table headers */
-  }
-  .tabB td {
-    text-align: right;
-    padding: 5px;
-    font-size: 14.5px; /* Set font size for table cells */
+
+  .ExtraPadRight th, .ExtraPadRight td {
+    text-align: center; /* Align text to the center */
+    padding: 5px 10px;
+    font-size: 14.5px;
+    width: 50%; 
   }
 </style>
 </head>
 <body>
-<table class="tabB">
- <thead>
+<table class="ExtraPadRight"><thead>
   <tr>
+   <th style="text-align:left;"> Parameters</th>
    <th style="text-align:right;"> Mean </th>
    <th style="text-align:right;"> SD </th>
    <th style="text-align:right;"> Lower </th>
@@ -779,143 +648,170 @@ tab.MCMC.b
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> -17.890911 </td>
-   <td style="text-align:right;"> 20.698141 </td>
-   <td style="text-align:right;"> -57.689702 </td>
-   <td style="text-align:right;"> 23.027826 </td>
+   <td style="text-align:left;"> beta_0 </td>
+   <td style="text-align:right;"> -17.891 </td>
+   <td style="text-align:right;"> 20.698 </td>
+   <td style="text-align:right;"> -57.690 </td>
+   <td style="text-align:right;"> 23.028 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.056487 </td>
-   <td style="text-align:right;"> 0.030255 </td>
-   <td style="text-align:right;"> -0.003148 </td>
-   <td style="text-align:right;"> 0.115854 </td>
+   <td style="text-align:left;"> beta_1 </td>
+   <td style="text-align:right;"> 0.056 </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> -0.003 </td>
+   <td style="text-align:right;"> 0.116 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.086330 </td>
-   <td style="text-align:right;"> 0.058003 </td>
-   <td style="text-align:right;"> -0.197201 </td>
-   <td style="text-align:right;"> 0.028019 </td>
+   <td style="text-align:left;"> beta_2 </td>
+   <td style="text-align:right;"> -0.086 </td>
+   <td style="text-align:right;"> 0.058 </td>
+   <td style="text-align:right;"> -0.197 </td>
+   <td style="text-align:right;"> 0.028 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.036785 </td>
-   <td style="text-align:right;"> 0.167412 </td>
-   <td style="text-align:right;"> -0.362524 </td>
-   <td style="text-align:right;"> 0.289261 </td>
+   <td style="text-align:left;"> beta_3 </td>
+   <td style="text-align:right;"> -0.037 </td>
+   <td style="text-align:right;"> 0.167 </td>
+   <td style="text-align:right;"> -0.363 </td>
+   <td style="text-align:right;"> 0.289 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.434688 </td>
-   <td style="text-align:right;"> 0.222016 </td>
-   <td style="text-align:right;"> -0.871323 </td>
-   <td style="text-align:right;"> -0.004617 </td>
+   <td style="text-align:left;"> beta_4 </td>
+   <td style="text-align:right;"> -0.435 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> -0.871 </td>
+   <td style="text-align:right;"> -0.005 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.016554 </td>
-   <td style="text-align:right;"> 0.098487 </td>
-   <td style="text-align:right;"> -0.208411 </td>
-   <td style="text-align:right;"> 0.176035 </td>
+   <td style="text-align:left;"> beta_5 </td>
+   <td style="text-align:right;"> -0.017 </td>
+   <td style="text-align:right;"> 0.098 </td>
+   <td style="text-align:right;"> -0.208 </td>
+   <td style="text-align:right;"> 0.176 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.890505 </td>
-   <td style="text-align:right;"> 0.084205 </td>
-   <td style="text-align:right;"> 0.725644 </td>
-   <td style="text-align:right;"> 1.055462 </td>
+   <td style="text-align:left;"> beta_6 </td>
+   <td style="text-align:right;"> 0.891 </td>
+   <td style="text-align:right;"> 0.084 </td>
+   <td style="text-align:right;"> 0.726 </td>
+   <td style="text-align:right;"> 1.055 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.194815 </td>
-   <td style="text-align:right;"> 0.137902 </td>
-   <td style="text-align:right;"> -0.468699 </td>
-   <td style="text-align:right;"> 0.074886 </td>
+   <td style="text-align:left;"> beta_7 </td>
+   <td style="text-align:right;"> -0.195 </td>
+   <td style="text-align:right;"> 0.138 </td>
+   <td style="text-align:right;"> -0.469 </td>
+   <td style="text-align:right;"> 0.075 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.232567 </td>
-   <td style="text-align:right;"> 0.138491 </td>
-   <td style="text-align:right;"> -0.040740 </td>
-   <td style="text-align:right;"> 0.497574 </td>
+   <td style="text-align:left;"> beta_8 </td>
+   <td style="text-align:right;"> 0.233 </td>
+   <td style="text-align:right;"> 0.138 </td>
+   <td style="text-align:right;"> -0.041 </td>
+   <td style="text-align:right;"> 0.498 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -0.020001 </td>
-   <td style="text-align:right;"> 0.231950 </td>
-   <td style="text-align:right;"> -0.471828 </td>
-   <td style="text-align:right;"> 0.433188 </td>
+   <td style="text-align:left;"> beta_9 </td>
+   <td style="text-align:right;"> -0.020 </td>
+   <td style="text-align:right;"> 0.232 </td>
+   <td style="text-align:right;"> -0.472 </td>
+   <td style="text-align:right;"> 0.433 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.171464 </td>
-   <td style="text-align:right;"> 0.207194 </td>
-   <td style="text-align:right;"> -0.230577 </td>
-   <td style="text-align:right;"> 0.574587 </td>
+   <td style="text-align:left;"> beta_10 </td>
+   <td style="text-align:right;"> 0.171 </td>
+   <td style="text-align:right;"> 0.207 </td>
+   <td style="text-align:right;"> -0.231 </td>
+   <td style="text-align:right;"> 0.575 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.158884 </td>
-   <td style="text-align:right;"> 0.161505 </td>
-   <td style="text-align:right;"> -0.155462 </td>
-   <td style="text-align:right;"> 0.474175 </td>
+   <td style="text-align:left;"> beta_11 </td>
+   <td style="text-align:right;"> 0.159 </td>
+   <td style="text-align:right;"> 0.162 </td>
+   <td style="text-align:right;"> -0.155 </td>
+   <td style="text-align:right;"> 0.474 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 0.432406 </td>
-   <td style="text-align:right;"> 0.187672 </td>
-   <td style="text-align:right;"> 0.053277 </td>
-   <td style="text-align:right;"> 0.797462 </td>
+   <td style="text-align:left;"> beta_12 </td>
+   <td style="text-align:right;"> 0.432 </td>
+   <td style="text-align:right;"> 0.188 </td>
+   <td style="text-align:right;"> 0.053 </td>
+   <td style="text-align:right;"> 0.797 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> -1.480241 </td>
-   <td style="text-align:right;"> 0.498895 </td>
-   <td style="text-align:right;"> -2.459252 </td>
-   <td style="text-align:right;"> -0.498583 </td>
+   <td style="text-align:left;"> beta_13 </td>
+   <td style="text-align:right;"> -1.480 </td>
+   <td style="text-align:right;"> 0.499 </td>
+   <td style="text-align:right;"> -2.459 </td>
+   <td style="text-align:right;"> -0.499 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 16.226183 </td>
-   <td style="text-align:right;"> 1.464961 </td>
-   <td style="text-align:right;"> 13.654965 </td>
-   <td style="text-align:right;"> 19.337703 </td>
+   <td style="text-align:left;"> sigma_sq </td>
+   <td style="text-align:right;"> 16.226 </td>
+   <td style="text-align:right;"> 1.465 </td>
+   <td style="text-align:right;"> 13.655 </td>
+   <td style="text-align:right;"> 19.338 </td>
   </tr>
 </tbody>
  </table>
+ </body>
 </html>
 
-The next layers of complexity we will add for **(c)** are thinning, multiple chains, and Adaptive Scaling. 
+The next layers of complexity we will add for [Implementation (c)](#implementation-c) are thinning, multiple chains, and Adaptive Scaling. 
 
+<a name="implementation-c"></a> 
 ## Implementation (c) 
 
 > [!info]- (c): LR Adaptive Scaling, n-chain, Burn-in, Thinning, Jeffrey's Prior
 > ```r
-> mh.mcmc <- function(n.s, start.p, start.hessian, burnin, seed = 23, initial_scale_par = 1, n.chain = 3, thinning = 1, par_names = NULL, learning_rate = 0.05, target_acc_rate = 0.234){
+> mh.mcmc.c <- function(n.s, start.p, start.hessian, burnin, seed = 23, initial_scale_par = 1, n.chain = 3, thinning = 1, par_names = NULL, learning_rate = 0.05, target_acc_rate = 0.234, target_range = 0.01, Adapt = TRUE){
 >   np <- length(start.p)
 >   set.seed(seed) 
 >   
 >   chains <- list()
 >   scale_par_history <- vector("list", n.chain) # List to store scale_par history for each chain
+>   accept_rate_history <- vector("list", n.chain)
+>   
 >   
 >   for (j in 1:n.chain){
 >     chain_draws = matrix(NA, n.s, np)
 >     chain_draws[1, ] = start.p
->     acc_count = 0 # To count the number of acceptances
+>     acc_count = 0 # Initialize acc_count
 >     scale_par <- initial_scale_par # Initialize scale parameter for each chain
 >     C = -solve(start.hessian) * scale_par # Scale the covariance matrix
->     scale_par_vec <- numeric(n.s) # Store scale_par values for each iteration
+>     scale_par_vec <- numeric(n.s) 
+>     accept_rate_vec <- numeric(n.s)
 >     scale_par_vec[1] <- scale_par
 >     
 >     for (t in 2:n.s) {
 >       u = runif(1) 
 >       prop <- rmvnorm(1, mean = chain_draws[t-1, ], sigma = C)
 >       accept_ratio = exp(lpost(prop) - lpost(chain_draws[t-1,]))
->       
 >       if (u < accept_ratio) {
 >         chain_draws[t, ] = prop # accept
->         acc_count <- acc_count + 1
+>           acc_count <- acc_count + 1
 >       } else { 
 >         chain_draws[t, ] = chain_draws[t -1, ] # reject
 >       }
 >       
+>       current_acc_rate = acc_count / (t) 
 >       # Adapt scale_par during burn-in
->       if (t <= burnin) {
->         current_acc_rate = acc_count / t
->         scale_par <- scale_par * exp(learning_rate * (current_acc_rate - target_acc_rate))
->         C = -solve(start.hessian) * scale_par
+>       if ((t <= burnin) && Adapt) {
+>         if (
+>           # if under or over shooting target_range
+>           !((abs(target_acc_rate - current_acc_rate) >= 0 &&
+>              (abs(target_acc_rate - current_acc_rate)) <= target_range)) 
+>           ){ # then update scale_par
+>           scale_par <- scale_par * exp(learning_rate * (current_acc_rate - target_acc_rate))
+>           C = -solve(start.hessian) * scale_par
+>         } 
 >       }
+>       accept_rate_vec[t] <- current_acc_rate 
 >       scale_par_vec[t] <- scale_par
 >     }
 >     
->     scale_par_history[[j]] <- scale_par_vec # Store scale_par history for the chain
+>     accept_rate_history[[j]] <- accept_rate_vec
+>     scale_par_history[[j]] <- scale_par_vec 
 >     
 >     # Thinning and removing burn-in samples
 >     chains[[j]] <- chain_draws[(burnin+1):n.s,][seq(1, n.s - burnin, thinning),]
@@ -926,115 +822,231 @@ The next layers of complexity we will add for **(c)** are thinning, multiple cha
 >   }
 >   
 >   tab <- t(apply(X=do.call(rbind, chains),MARGIN = 2,FUN = samp.o))
+>   final_acceptance_rates <- sapply(accept_rate_history, function(x) tail(x,1))
 >   
->   return(list(chains = chains, tab = tab, final_acceptance_rate = acc_count / n.s, scale_par_history = scale_par_history))
+>   return(
+>     list(chains = chains,
+>          tab = tab, 
+>          final_acceptance_rates = final_acceptance_rates,
+>          scale_par_history = scale_par_history,
+>          accept_rate_history = accept_rate_history))
 > }
-> # Example usage
 > set.seed(23)
-> mcmc.out <- mh.mcmc(n.s = n.s, start.p = opt$par, start.hessian = opt$hessian, burnin = 500, initial_scale_par = 1, n.chain = 3, thinning = 20)
-> mcmc.out$tab
-> # scale_par_history
-> plot(1, type = "n", ylim = c(0,1), xlim = c(1,500), ylab = "scale_par")
-> lines(mcmc.out$scale_par_history[[1]][1:500], type = "l", col = "red")
-> lines(mcmc.out$scale_par_history[[2]][1:500], type = "l", col = "blue")
-> lines(mcmc.out$scale_par_history[[3]][1:500], type = "l", col = "green")
-> tail(mcmc.out$scale_par_history[[1]])
-> mcmc.out$final_acceptance_rate
-> coda::autocorr.plot(mcmc.out$chains[[1]],lag.max=40)
-> traceplot_mcmc <- function(mcmc_chains, param_indices = NULL, main_title = "", colors = NULL, par_names = NULL, ask = TRUE, ...){
->   n_chains <- length(mcmc_chains)
->   
->   # If specific parameters are not specified, plot all
->   if (is.null(param_indices)) {
->     param_indices <- 1:ncol(mcmc_chains[[1]])
->   }
->   
->   # Generate colors if not provided
->   if (is.null(colors) || length(colors) < n_chains) {
->     colors <- rainbow(n_chains)
->   }
->   
->   if(ask){
->     par(ask = TRUE)
->   }
->   
->   if(is.null(par_names)){
->     par_names <- paste("Parameter", param_indices)
->   }
->   
->   
->   for (i in param_indices) {
->     plot(NULL, xlim = c(1, nrow(mcmc_chains[[1]])), ylim = range(sapply(mcmc_chains, function(x) x[, i])), 
->          xlab = "Iteration", ylab = par_names[i], main = paste(main_title, par_names[i]), ...)
->     
->     for (j in 1:n_chains) {
->       lines(mcmc_chains[[j]][, i], col = colors[j], ...)
->     }
->   }
->   if(ask){
->     par(ask = FALSE)
->   }
-> }
-> # Example usage
-> par(mfrow = c(2,4))
-> traceplot_mcmc(mcmc.out$chains, param_indices = 1:8,par_names = par_names, ask = FALSE)
-> traceplot_mcmc(mcmc.out$chains, param_indices = 9:15,par_names = par_names, ask = FALSE)  
+> burnin <- 1000
+> mcmc.c <- mh.mcmc.c(n.s = n.s, start.p = opt$par, start.hessian = opt$hessian, burnin = burnin, initial_scale_par = 1, n.chain = 3, thinning = 20, target_range = 0.0005)
 > ```
 
-### Thinning 
-
-Thinning is a process that is done to help reduce the autocorrelation present in the chains; if there is severe autocorrelation, then the results are not usable for inference. Autocorrelation in the chains is usually diagnosed with an autocorrelation plot. Looking at the autocorrelation plot, we can see that there is still some concerning autocorrelation (we want almost no spikes for the first half dozen lags); thus, via bumping up the argument `thinning` to be something higher than 20, say 40, we might resolve the issue of autocorrelation. 
-
 ```r
-par(mfrow = c(2, 2))
-for (i in 1:4) {
-  coda::autocorr.plot(mcmc.out$chains[[1]][, i],lag.max = 30,auto.layout = FALSE)
-  title(main = paste0(par_names[i]),line = 0.8,cex.main = 0.95)
-}
-mtext(
-  "Autocorrelation for first 4 Parameters",
-  outer = TRUE,cex = 1,line = -1.5,font = 2
-  )
-par(mfrow = c(1, 1))
+mcmc.c$tab
 ```
 
-<figure>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ table.ExtraPadRight {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+    border-collapse: separate;
+    border-spacing: 0px 0;
+    table-layout: fixed;
+  }
+
+  .ExtraPadRight th, .ExtraPadRight td {
+    text-align: center; /* Align text to the center */
+    padding: 5px 10px;
+    font-size: 14.5px;
+    width: 50%; 
+  }
+</style>
+</head>
+<body>
+<table class = "ExtraPadRight"><thead>
+  <tr>
+   <th style="text-align:left;">Parameters</th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> SD </th>
+   <th style="text-align:right;"> Lower </th>
+   <th style="text-align:right;"> Upper </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> beta_0 </td>
+   <td style="text-align:right;"> -17.626 </td>
+   <td style="text-align:right;"> 20.845 </td>
+   <td style="text-align:right;"> -58.742 </td>
+   <td style="text-align:right;"> 23.601 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_1 </td>
+   <td style="text-align:right;"> 0.057 </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> -0.002 </td>
+   <td style="text-align:right;"> 0.116 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_2 </td>
+   <td style="text-align:right;"> -0.085 </td>
+   <td style="text-align:right;"> 0.058 </td>
+   <td style="text-align:right;"> -0.198 </td>
+   <td style="text-align:right;"> 0.028 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_3 </td>
+   <td style="text-align:right;"> -0.035 </td>
+   <td style="text-align:right;"> 0.167 </td>
+   <td style="text-align:right;"> -0.364 </td>
+   <td style="text-align:right;"> 0.295 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_4 </td>
+   <td style="text-align:right;"> -0.434 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> -0.875 </td>
+   <td style="text-align:right;"> 0.001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_5 </td>
+   <td style="text-align:right;"> -0.018 </td>
+   <td style="text-align:right;"> 0.097 </td>
+   <td style="text-align:right;"> -0.204 </td>
+   <td style="text-align:right;"> 0.177 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_6 </td>
+   <td style="text-align:right;"> 0.891 </td>
+   <td style="text-align:right;"> 0.083 </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:right;"> 1.052 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_7 </td>
+   <td style="text-align:right;"> -0.198 </td>
+   <td style="text-align:right;"> 0.138 </td>
+   <td style="text-align:right;"> -0.469 </td>
+   <td style="text-align:right;"> 0.072 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_8 </td>
+   <td style="text-align:right;"> 0.236 </td>
+   <td style="text-align:right;"> 0.137 </td>
+   <td style="text-align:right;"> -0.033 </td>
+   <td style="text-align:right;"> 0.502 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_9 </td>
+   <td style="text-align:right;"> -0.027 </td>
+   <td style="text-align:right;"> 0.231 </td>
+   <td style="text-align:right;"> -0.476 </td>
+   <td style="text-align:right;"> 0.417 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_10 </td>
+   <td style="text-align:right;"> 0.169 </td>
+   <td style="text-align:right;"> 0.207 </td>
+   <td style="text-align:right;"> -0.236 </td>
+   <td style="text-align:right;"> 0.576 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_11 </td>
+   <td style="text-align:right;"> 0.156 </td>
+   <td style="text-align:right;"> 0.163 </td>
+   <td style="text-align:right;"> -0.162 </td>
+   <td style="text-align:right;"> 0.478 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_12 </td>
+   <td style="text-align:right;"> 0.429 </td>
+   <td style="text-align:right;"> 0.188 </td>
+   <td style="text-align:right;"> 0.059 </td>
+   <td style="text-align:right;"> 0.802 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> beta_13 </td>
+   <td style="text-align:right;"> -1.472 </td>
+   <td style="text-align:right;"> 0.499 </td>
+   <td style="text-align:right;"> -2.462 </td>
+   <td style="text-align:right;"> -0.505 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> sigma_sq </td>
+   <td style="text-align:right;"> 16.086 </td>
+   <td style="text-align:right;"> 1.503 </td>
+   <td style="text-align:right;"> 13.408 </td>
+   <td style="text-align:right;"> 19.228 </td>
+  </tr>
+</tbody>
+</table>
+<body>
+</html>
+
+Notice that the point estimate we get from the `samp.o` of our posterior distributions is again different from [Implementation (a)](#implementation-a) and [Implementation (b)](#implementation-b).
+
+<a name="Thinning"></a> 
+### Thinning 
+
+Thinning is a process that is done to help reduce the autocorrelation present in the chains; if there is severe autocorrelation, then the results are not usable for inference. Autocorrelation in the chains is usually diagnosed with an autocorrelation plot. Looking at the <a href="#autocorrelation-plot-for-c">Traceplot for (c)</a>, we can see that there is still some concerning autocorrelation (we want almost no spikes for the first half dozen lags); thus, via bumping up the argument `thinning` to be something higher than 20, say 40, we might resolve the issue of autocorrelation. 
+
+```r
+old_par <- par()
+par(mfrow = c(2,2), mar = c(4.5, 4.5, 2.5, 2),font.lab = 2)
+xacf <- list()
+for (i in 1:4){
+xacf[[i]] <- acf(mcmc.out$chains[[1]][, i], plot = FALSE)
+plot(xacf[[i]]$lag,xacf[[i]]$acf, type = "h", xlab = "Lag",ylab = "Autocorrelation", ylim = c(-0.1, 1),cex.lab = 1.3, main = par_names[i], cex.main = 1.5)
+}
+par(old_par)
+```
+
+<figure id="autocorrelation-plot-for-c">
   <img src="pictures/autocor.png" width="800" height="500" alt="Description of Image">
-  <figcaption>Autocorrelation for first 4 Parameters, first Chain</figcaption>
+  <figcaption><strong>Autocorrelation Plot for (c):</strong> 1 chain, first four parameters</figcaption>
 </figure>
 
 
+
+<a name="Mixing of Chains"></a> 
 ### Mixing of Chains 
 
-With adding multiple chains, we have just added an extra loop (in this case, iterating over `j`) to repeat the same sampling procedure for each chain. 
+With adding multiple chains, we have just added an extra loop (in this case, iterating over `j`) to repeat the same sampling procedure for each chain. The traceplots below show good mixing for the first four parameters. If the respective traceplots for each parameter show good mixing of chains, this indicates that the MCMC algorithm converged, and given no problems of autocorrelation, the results are usable for inference.  
 
-<figure>
+<figure id="traceplot-for-c">
   <img src="pictures/mixing.png" width="800" height="500" alt="Description of Image">
-  <figcaption>Mixing of 3 chains, first 4 Parameters</figcaption>
+  <figcaption><strong>Traceplot for (c)</strong>: 3 chains, first four parameters</figcaption>
 </figure>
 
-For reference, the image below shows a good mixing of the first plot, indicating convergence, while plots 2 and 3 show that the MCMC has not converged. 
+
+For reference, the image below shows a good mixing of the first chain, indicating convergence, while chain 2 initially shows the chain has not converged until around iteration 1500 and chain 3 never converges. However, a caveat of this plot is that the chains are on different plots. Ideally you want to use a traceplot that shows all chains for a respective parameter on the same plot. Hence, the word mixing is referring  to the fuzzy caterpillar-looking image shown in  <a href="#traceplot-for-c">Traceplot for (c)</a>
 
 <figure>
   <img src="pictures/convergence.png" width="800" height="500" alt="Description of Image">
 </figure>
 
-(Taboga, Marco, 2021)[^5]
+**(Taboga, Marco, 2021)**[^5]
+
 
 &nbsp;
 
 > [!note] Note
 >
-> If MCMC did not converge, the results are not usable; the same goess for if there is high autocorrelation shown in the autocorrelation plot.
+> If MCMC did not converge, the results are not usable; results are also not usable if there is high autocorrelation shown in the autocorrelation plot.
 
+<a name="Adaptive Scaling"></a> 
 ### Adaptive Scaling 
 
-The complex to explain is Adaptive Scaling. 
+Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I named  `scale_par` i the code), which in terms scales the variance-covariance matrix  `C`. The purpose of this scaling is specific to the accept-reject methodology inherent in Metropolis-Hastings MCMC. As there is no knowing what the Acceptance rate will be before running the algorithm as the process is stochastic and is subject to your data, likelihood, and priors. Notice in  [Implementation (a)](#implementation-a) we set `scale_par`, but in practice, this involved rerunning MCMC multiple times adjusting scale_par each run, trying to get an acceptance rate close to the ideal acceptance rate of 0.234. As shown in <a href="#accept-and-scale-for-c">MCMC Acceptance Rate Scale Parameter for (c)</a> below, using a learning rate we are able to adjust `scale_par` to get the acceptance rate to hover around 0.234, however, after burnin, while `scale_par` is no longer being adjusted the acceptance rate continues to drift below 0.0234 unit it converges as part of the chains. Hence, adaptive scaling is not perfect, although we can lift the acceptance rate from minuscule digits below 0.001 to above 0.1, we still don't land within a very close distance of the ideal acceptance rate of 0.234. 
 
-<figure>
+<figure id="accept-and-scale-for-c">
   <img src="pictures/adapt.png" width="800" height="500" alt="Description of Image">
+  <figcaption><strong>MCMC Acceptance Rate Scale Parameter:</strong>  iterations 0 to 3000 and 0 to 100000</figcaption>
 </figure>
 
+> [!note] Note
+>
+> A more popular method for Adaptive scaling is Robust Adaptive Metropolis ([RAM](https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html)). However, to avoid the need for Adaptive Scaling altogether, Gibbs Sampling is another very popular MCMC procedure that uses conditioning to avoid an acceptance rate and, subsequently, the need for Adaptive Scaling.
+ 
 <!--FOOTNOTES-->
 
 
