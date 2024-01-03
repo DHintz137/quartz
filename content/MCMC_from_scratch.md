@@ -1039,7 +1039,7 @@ For reference, the image below shows a good mixing of the first chain, indicatin
 Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I named  `scale_par` i the code), which in terms scales the variance-covariance matrix  `C`. The purpose of this scaling is specific to the accept-reject methodology inherent in Metropolis-Hastings MCMC. As there is no knowing what the Acceptance rate will be before running the algorithm as the process is stochastic and is subject to your data, likelihood, and priors. Notice in  [Implementation (a)](#implementation-a) we set `scale_par`, but in practice, this involved rerunning MCMC multiple times adjusting scale_par each run, trying to get an acceptance rate close to the ideal acceptance rate of 0.234. As shown in <a href="#accept-and-scale">MCMC Acceptance Rate Scale Parameter for (c)</a> below, using a learning rate we are able to adjust `scale_par` to get the acceptance rate to hover around 0.234, however, after burnin, while `scale_par` is no longer being adjusted the acceptance rate continues to drift below 0.0234 unit it converges as part of the chains. Hence, adaptive scaling is not perfect, although we can lift the acceptance rate from minuscule digits below 0.001 to above 0.1, we still don't land within a very close distance of the ideal acceptance rate of 0.234. 
 
 <figure id="accept-and-scale">
-  <img src="pictures/adapt.png" width="800" height="500" alt="Description of Image">
+  <img src="pictures/Adapt.png" width="800" height="500" alt="Description of Image">
   <figcaption><strong>MCMC Acceptance Rate Scale Parameter:</strong>  iterations 0 to 3000 and 0 to 100000</figcaption>
 </figure>
 
