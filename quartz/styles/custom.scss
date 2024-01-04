@@ -44,6 +44,8 @@ pre.poetry {
 // My Edits 
 // ==============================================================================================  
 
+// Carosal Code 
+// from https://codepen.io/siiron/pen/QWwLoMy
 @mixin aspect-ratio($width, $height) {
   position: relative;
     
@@ -67,8 +69,13 @@ pre.poetry {
 
 // Styling
 
-section {
+[saved-theme="light"] .carousel-section {
     background: #F4F4F4;
+    padding: 50px 0;
+}
+
+[saved-theme="dark"] .carousel-section {
+    background: #2A2A2A;
     padding: 50px 0;
 }
 
@@ -121,7 +128,7 @@ section {
     display: flex;
 }
 
-.carousel__slide {
+ [saved-theme="dark"] .carousel__slide {
     position: relative;
     display: block;
     flex: 1 0 100%;
@@ -153,13 +160,14 @@ section {
         align-self: flex-end;
         padding: 20px 20px 0 20px;
         flex: 0 0 auto;
+        color: #EBE6DC;
         width: 25%;
         min-width: 150px;
     }
     
     .credit {
         margin-top: 1rem;
-        color: rgba(0, 0, 0, 0.5);
+        color: #F1B922;  
         display: block;        
     }
     
@@ -167,6 +175,55 @@ section {
         overflow-y: scroll;
     }
 }
+
+ [saved-theme="light"] .carousel__slide {
+    position: relative;
+    display: block;
+    flex: 1 0 100%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 300ms ease-out;
+    vertical-align: top;
+    box-sizing: border-box;
+    white-space: normal;
+    
+    figure {
+        display: flex;
+        margin: 0;
+    }
+    
+    div {
+        @include aspect-ratio(3, 2);
+        width: 100%;
+    }
+    
+    img {
+        display: block;                                                                                                                                                    
+        flex: 1 1 auto;
+        object-fit: cover;
+    }
+
+    figcaption {
+        align-self: flex-end;
+        padding: 20px 20px 0 20px;
+        flex: 0 0 auto;
+        color: #7A7A7A;//98AFC8
+        width: 25%;
+        min-width: 150px;
+    }
+
+    .credit {
+        margin-top: 1rem;
+        color: #284B63;//7A7A7A
+        display: block;
+    }
+
+    &.scrollable {
+        overflow-y: scroll;
+    }
+}
+
 
 .carousel__thumbnails {
     list-style: none;
@@ -286,27 +343,7 @@ section {
       caption-side: top;
     }
   }
-
-//  table.ExtraPadRight {
-//    table-layout: fixed;
-//
-//    td:last-child, th:last-child {
-//      width: 20%;
-//      padding-right: 92.5px;
-//    }
-//  }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 // style for class body (I am leaving it in as a reference for when I want to make settings for a spefic class)

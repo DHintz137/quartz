@@ -15,7 +15,7 @@ I was born and raised on a 4th generation dairy farm in Te Puke, New Zealand. Gr
 In the US, I landed about as far from the ocean as it gets; I landed in Laramie, WY. I moved 'sight unseen', and although it took some time, I've learned to appreciate the "prairie sea"- the golden and brown of the Rocky Mountain prairie that surrounds Laramie. 
 
 
-<section>
+<section class="carousel-section">
     <div class="container">
         <div class="carousel">
             <input type="radio" name="slides" checked="checked" id="slide-1">
