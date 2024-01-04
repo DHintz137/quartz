@@ -9,7 +9,7 @@ date: 2023-12-21
 G'day!
 ```
 
-I'm Dan, a Kiwi currently expanding my horizons in the United States. I'm pursuing a Master's in Statistics at the University of Wyoming and am an aspiring data scientist. You can learn more about my journey in the section [[About|A Little About Me]]. Also, you can see a breakdown of content by tags [[tags|here]].
+I'm Dan, a Kiwi currently expanding my horizons in the United States. I'm pursuing a Master's in Statistics at the University of Wyoming and am an aspiring data scientist. You can learn more about my journey in the section [[About|A Little About Me]]. Also, you can see a breakdown of this website's content by tags [[tags|here]].
 
 My passion for data science is backed by four years of experience in scientific programming, mathematical, and statistical modeling. I'm known among my peers for my ability in applying a wide range of modeling methodologies and distilling them into concise scientific reports that unveil meaningful insights.
 
