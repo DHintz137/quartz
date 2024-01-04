@@ -5,9 +5,14 @@ tags:
 - writing 
 ---
 
-The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Below, I present two different style guides: 
+<figure>
+  <img src="pictures/int_vs_ext_reports.png" width="600" height="375" alt="Description of Image">
+  <figcaption>Generated with DALL-E</figcaption>
+</figure>
 
-![](pictures/int_vs_ext_reports.png)
+The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Personally I love style guide because it forces people to be clear about what they want and it helps you as the data scientist make the client happy. Unfortunately, none of the organisation I worked for presented m style guide for me work, but I was able to make one for a college professor (see here). 
+
+Below, I present two different style guides.
 
 ## Internal vs. External reports
 

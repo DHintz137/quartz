@@ -6,11 +6,13 @@ tags:
 
 
 <figure>
-  <img src="pictures/HanaandMe.png" width="600" height="450" alt="">
-  <figcaption>My Partner Hana and I after camping the night at Vedauwoo, WY.</figcaption>
+  <img src="pictures/ski.jpeg" width="450" height="422" alt="">
+  <figcaption>Cross-country skiing at Happy Jack, Laramie, Wyoming</figcaption>
 </figure>
 
-I was born and raised on a Dairy farm in Te Puke, New Zealand. My family are 4th generation farmers, and my parents also own and operate a Kiwi Fruit Orchard.  My two twin Sisters, Mum, and Dad, all still live in New Zealand. 
+I was born and raised on a 4th generation dairy farm in Te Puke, New Zealand. Growing up, I was a kid with lots of energy and found running as an outlet - it all started with my mum telling me to run laps around the house (outside) so she could have some peace and quiet. We were fortunate that the ocean and fishing was always were the family spent time together, and it's where I feel the most calm. Despite my love for home and family, I took the opportunity to move to the United States for university and to pursue a running scholarship. 
+
+In the US, I landed about as far from the ocean as it gets; I landed in Laramie, WY. I moved 'sight unseen', and although it took some time, I've learned to appreciate the "prairie sea"- the golden and brown of the Rocky Mountain prairie that surrounds Laramie. 
 
 
 <!--
@@ -42,7 +44,7 @@ Cow shed photo
                             <img src="pictures/spearfishing.png" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Spearfishing with my childhood friend 
                             <span class="credit">Coromandel, New Zealand</span>
                         </figcaption>
                     </figure>
@@ -53,7 +55,7 @@ Cow shed photo
                             <img src="pictures/teton_run.png" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            On a morning long-run while I was still a student-athlete at UW
                             <span class="credit">Teton County, Wyoming</span>                            
                         </figcaption>
                     </figure>
@@ -64,7 +66,7 @@ Cow shed photo
                             <img src="pictures/ute.png" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dad and I giving some family friends a tour of the farm
                             <span class="credit">Te Puke, New Zealand</span>                            
                         </figcaption>
                     </figure>
@@ -75,7 +77,7 @@ Cow shed photo
                             <img src="pictures/nz_champs.jpg" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Running at the 2015, New Zealand National champs for 1500m 
                             <span class="credit">Dunedin, New Zealand </span>                            
                         </figcaption>
                     </figure>
@@ -83,11 +85,11 @@ Cow shed photo
                 <li class="carousel__slide">
                     <figure>
                         <div>
-                            <img src="pictures/ski_crop.png" alt="">
+                            <img src="pictures/HanaandMe.png" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            <span class="credit">Happy Jack, Laramie, WY  </span>                            
+                            Out on a camping trip with my partner 
+                            <span class="credit">Vedauwoo, WY </span>                            
                         </figcaption>
                     </figure>
                 </li>
@@ -97,7 +99,7 @@ Cow shed photo
                             <img src="pictures/cowshed.JPG" alt="">
                         </div>
                         <figcaption>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Hanging with the girls! 
                             <span class="credit">Te Puke, New Zealand</span>                            
                         </figcaption>
                     </figure>
@@ -117,7 +119,7 @@ Cow shed photo
                     <label for="slide-4"><img src="pictures/nz_champs.jpg" alt=""></label>
                 </li>
                 <li>
-                    <label for="slide-5"><img src="pictures/ski_crop.png" alt=""></label>
+                    <label for="slide-5"><img src="pictures/HanaandMe.png" alt=""></label>
                 </li>
                 <li>
                     <label for="slide-6"><img src="pictures/cowshed.JPG" alt=""></label>
