@@ -15,19 +15,6 @@ I was born and raised on a 4th generation dairy farm in Te Puke, New Zealand. Gr
 In the US, I landed about as far from the ocean as it gets; I landed in Laramie, WY. I moved 'sight unseen', and although it took some time, I've learned to appreciate the "prairie sea"- the golden and brown of the Rocky Mountain prairie that surrounds Laramie. 
 
 
-<!--
-Cow shed photo
--->
-
-<!--
-<div class="gallery"> 
-<img src="pictures/spearfishing.png" alt="Description of Image 1">
-<img src="pictures/teton_run.png" alt="Description of Image 2"> 
-<img src="pictures/ute.png" alt="Description of Image 3"> 
-<img src="pictures/nz_champs.jpg" alt="Description of Image 3"> 
-</div>
--->
-
 <section>
     <div class="container">
         <div class="carousel">
@@ -63,7 +50,7 @@ Cow shed photo
                 <li class="carousel__slide">
                     <figure>
                         <div>
-                            <img src="pictures/ute.png" alt="">
+                            <img src="pictures/ute.jpeg" alt="">
                         </div>
                         <figcaption>
                             Dad and I giving some family friends a tour of the farm
@@ -113,7 +100,7 @@ Cow shed photo
                     <label for="slide-2"><img src="pictures/teton_run.png" alt=""></label>
                 </li>
                 <li>
-                    <label for="slide-3"><img src="pictures/ute.png" alt=""></label>
+                    <label for="slide-3"><img src="pictures/ute.jpeg" alt=""></label>
                 </li>
                 <li>
                     <label for="slide-4"><img src="pictures/nz_champs.jpg" alt=""></label>

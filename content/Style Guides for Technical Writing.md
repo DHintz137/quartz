@@ -10,8 +10,7 @@ tags:
   <figcaption>Generated with DALL-E</figcaption>
 </figure>
 
-The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Personally I love style guide because it forces people to be clear about what they want and it helps you as the data scientist make the client happy. Unfortunately, none of the organisation I worked for presented m style guide for me work, but I was able to make one for a college professor (see here). 
-
+The field of technical communication is rapidly evolving; the need for effective and clear technical writing has never been more crucial. A great way to ensure quality technical communication is via style guides. Personally I love style guide because it forces people to be clear about what they want and it helps you as the data scientist make the client happy. Unfortunately, while none of the organisations I worked for presented me a style guide or the opportunity to make one for them, I was able to make one for a college professor (see [here](https://github.com/DHintz137/quartz/blob/v4/content/Docs/styleGuide.pdf)). 
 Below, I present two different style guides.
 
 ## Internal vs. External reports
@@ -58,7 +57,7 @@ The Internal Report Style Guide is designed for data science teams. It emphasize
 - Language: Technical but accessible to all team members with varying expertise.
 - Structure: Logical flow with clearly defined sections, headings, and subheadings.
 
-
+**For Example:** My post [[MCMC_from_scratch|Metropolis-Hastings MCMC from Scratch]] would be considered in the style of an internal report: it is detail oriented, it presents the code in full, its not styled as an official document and it less concerned with summarising overall findings.
 ### External Report Style Guide
 
 #### Objective

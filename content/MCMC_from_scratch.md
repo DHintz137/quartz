@@ -1046,14 +1046,11 @@ Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I nam
 > [!note] Note
 >
 > A more popular method for Adaptive scaling is Robust Adaptive Metropolis ([RAM](https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html)). However, to avoid the need for Adaptive Scaling altogether, Gibbs Sampling is another very popular MCMC procedure that uses conditioning to avoid an acceptance rate and, subsequently, the need for Adaptive Scaling.
- 
+
+
 <!--FOOTNOTES-->
-
-
 [^1]: [Givens and Hoeting, 2006](https://onlinelibrary.wiley.com/doi/book/10.1002/9781118555552)
 [^2]: [Introna, Michele, et al, 2022](https://pubmed.ncbi.nlm.nih.gov/35147768/)
 [^3]: [Lohman, T, 1992](https://www.sciepub.com/reference/33145)
 [^4]: [Roberts and Rosenthal, 2001](https://www.jstor.org/stable/3182776)
 [^5]: [Taboga, Marco, 2021](https://statlect.com/fundamentals-of-statistics/Markov-Chain-Monte-Carlo-diagnostics)
-
-
