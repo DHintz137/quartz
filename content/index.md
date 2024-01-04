@@ -9,7 +9,7 @@ date: 2023-12-21
 G'day!
 ```
 
-I'm Dan, a Kiwi currently expanding my horizons in the United States. I'm pursuing a Master's in Statistics at the University of Wyoming and am an aspiring data scientist. You can learn more about my journey in the section [[About|A Little About Me]].
+I'm Dan, a Kiwi currently expanding my horizons in the United States. I'm pursuing a Master's in Statistics at the University of Wyoming and am an aspiring data scientist. You can learn more about my journey in the section [[About|A Little About Me]]. Also, you can see a breakdown of content by tags [[tags|here]].
 
 My passion for data science is backed by four years of experience in scientific programming, mathematical, and statistical modeling. I'm known among my peers for my ability in applying a wide range of modeling methodologies and distilling them into concise scientific reports that unveil meaningful insights.
 
@@ -22,6 +22,10 @@ Curious about what to expect from my website? Take a look at my article on [[MCM
 At the core of my professional life is a deep-seated passion for working alongside domain experts. I enjoy helping them understand and apply the best modeling strategies for their specific challenges. I find this process to hone my own craft from having to apply my knowledge to new problems as well as an inherent richness in learning something new from a domain expert. Sharing knowledge, experiences and collectively overcoming obstacles is, for me, the essence of what makes this field so rewarding.
 
 
+
+<!--
+see settings at quartz/components/pages/TagContent.tsx
+-->
 
 ```poetry
 Cheers,
