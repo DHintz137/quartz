@@ -1,0 +1,649 @@
+##### pre-set up ####
+is_mac <- function() unname(Sys.info()["sysname"] == "Darwin")
+
+if (is_mac() && !is.null(quartzFonts()$lato)){
+  quartzFonts(lato = c("Lato-Regular",     # Normal
+                       "Lato-Bold",        # Bold
+                       "Lato-Italic",      # Italic
+                       "Lato-BoldItalic"   # Bold-Italic 
+  ))
+  par(family = 'lato')
+}
+
+options(digits = 3)
+
+#### Reading in the Data ####
+
+dat = read.csv("bodyfat.csv");n = nrow(dat)
+y = dat[,1]; X = as.matrix(cbind(Int = rep(1,n),dat[,-1]))
+p = ncol(X); n.s = 100000; k = p - 1; ee = 1e-16
+par_names <- c(paste0("beta_", 0:13),"sigma_sq")
+
+#### Write our own Sample Function ####
+
+samp.o <- function(t.s) {
+  round(
+    c(mean = mean(t.s),
+      sd = sd(t.s),
+      lower = quantile(t.s, 0.025, names = F),
+      upper = quantile(t.s, 0.975, names = F)), digits = 6)
+}
+
+#### Specify Log-Likelihood Function #### 
+
+llike <- function(pars) {
+  beta <- pars[1:(length(pars)-1)]
+  sigma_sq <- max(pars[(length(pars))],ee)
+  sum(log(dnorm(y, mean = X %*% beta, sd = sqrt(sigma_sq))))}
+
+#### Use Optimisation to Get Starting Values ####
+
+par0 = c(mean(y),rep(0,p-1),3)
+opt <- optim(par = par0,fn = llike,method = "BFGS",
+             hessian = TRUE,control = list(fnscale=-1))
+
+#### Specify Prior Function ####
+lprior <- function(pars) {sigma_sq = max(pars[np],ee); log(1 /(sigma_sq))}
+
+#### Specify Posterior Function ####
+lpost <- function(pars) llike(pars) + lprior(pars)
+
+#### Implementation (a) ####
+# Manual scaling, Single Chain, Burn-in, No thinning, Single Chain, Jeffrey's Prior #
+
+library(mvtnorm)
+np <- length(opt$par)
+n.s = 100000; draws = matrix(NA, n.s, np)
+draws[1, ] = opt$par; C = -solve(opt$hessian)
+scale_par = .45; burnin = 500; set.seed(23) 
+
+for (t in 2:n.s) {
+  u = runif(1) 
+  prop <- rmvnorm(1, mean = draws[t-1, ], sigma = scale_par*C)
+  if (u < exp(lpost(prop) - lpost(draws[t-1,]))) { # acceptance ratio
+    draws[t, ] = prop # accept #
+  } else { 
+    draws[t, ] = draws[t -1, ] }} # reject #
+
+tab.MCMC.a <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
+row.names(tab.MCMC.a) <- par_names; tab.MCMC.a
+(acc.a = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+
+
+tab.MCMC.a
+# cat(knitr::kable(tab.MCMC.a, "html"), sep = "\n")
+
+#### Plotly histogream and density ####
+
+# Load the plotly library
+library(plotly)
+
+# Generate random data
+x <- draws[,3]
+
+lightsteelblue1 <- "#CAE1FF"
+San_Juan <- "#365677"
+
+# Calculate the desired number of bins (for example, 30 bins)
+num_bins <- 30
+bin_width <- diff(range(x)) / num_bins
+
+# Create histogram data with specified number of bins
+hist_data <- hist(x, breaks = seq(min(x), max(x), by = bin_width), plot = FALSE)
+
+# Normalize histogram counts to get density
+hist_density <- hist_data$counts / sum(hist_data$counts * bin_width)
+
+# Calculate density data
+density_data <- density(x)
+
+# Create an interactive plotly plot
+fig <- plot_ly() %>%
+  add_bars(x = hist_data$mids, y = hist_density, name = "Histogram",
+           marker = list(color = lightsteelblue1, line = list(color = 'black', width = 1)),
+           width = bin_width * 0.95,
+           hoverinfo = 'text',
+           hovertemplate = ~paste("Slope: ", round(hist_data$mids,3), "<br>Density: ", sprintf("%.3f", hist_density))) %>%
+  add_lines(x = density_data$x, y = density_data$y, name = "Density", line = list(color = San_Juan),
+            hoverinfo = 'text',
+            hovertemplate = ~paste("Slope: ", round(density_data$x,3),"<br>Density: ", sprintf("%.3f", density_data$y)))
+
+# Adding layout details
+fig <- fig %>% layout(title = "Histogram of Adult Males Weight (beta_3)",
+                      xaxis = list(title = "Slope Coefficents for Weight (lb)"),
+                      yaxis = list(title = "Density"))
+
+# Show the plot
+fig
+
+# plotly::api_create(fig, filename = "weightHist", fileopt = "overwrite")
+
+
+#### code_callout ####
+# for printing code into foldable callouts for my website #
+code_callout <- function(code_string, Code_Header = "Code Header", callout_type = "info") {
+  # Split the code into lines
+  code_lines <- unlist(strsplit(code_string, "\n"))
+  
+  # Remove empty lines at the start, if any
+  code_lines <- code_lines[code_lines != ""]
+  
+  # Prepend "> " to each line
+  formatted_lines <- paste("> ", code_lines, sep = "")
+  
+  # Insert a newline after the code block start line
+  formatted_lines <- c("> ```r", formatted_lines)
+  
+  # Add Markdown code block delimiters and header
+  code_block <- paste(c(paste0("> [!", callout_type, "]- ", Code_Header), formatted_lines, "> ```"), collapse = "\n")
+  
+  cat(code_block, sep = "\n")
+}
+
+#### MCMC_a Text ####
+MCMC_a <- "
+library(mvtnorm)
+np <- length(opt$par)
+n.s = 100000; draws = matrix(NA, n.s, np)
+draws[1, ] = opt$par; C = -solve(opt$hessian)
+scale_par = .45; burnin = 500; set.seed(23) 
+
+for (t in 2:n.s) {
+  u = runif(1) 
+  prop <- rmvnorm(1, mean = draws[t-1, ], sigma = scale_par*C)
+  if (u < exp(lpost(prop) - lpost(draws[t-1,]))) { # acceptance ratio
+    draws[t, ] = prop # accept #
+  } else { 
+    draws[t, ] = draws[t -1, ] }} # reject #
+
+tab.MCMC.a <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
+row.names(tab.MCMC.a) <- par_names; tab.MCMC.a
+(acc.a = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+"
+code_callout(MCMC_a)
+
+
+#### Implementation (b) ####
+# Manual scaling, Single chain, Burn-in, No thinning, Uniform and Normal priors #
+
+priors_list <- list(
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_0 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_1 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_2 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_3 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_4 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_5 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_6 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_7 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_8 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_9 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_10 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_11 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_12 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_13 Prior
+  function(theta) dunif(theta, min = 1e-6, max = 40,  log = TRUE) # sigma_sq Prior
+)
+
+# Function to calculate the total log prior
+log_prior_func <- function(theta, priors_list) {
+  log_prior_values <- mapply(function(theta_val, prior_func) prior_func(theta_val), theta, priors_list)
+  sum(log_prior_values)
+}
+
+# Modify lprior to use the log_prior_func
+lprior <- function(pars) log_prior_func(pars, priors_list)
+
+# Modify lpost to include the new lprior
+lpost <- function(pars) llike(pars) + lprior(pars)
+
+for (t in 2:n.s) {
+  u = runif(1) 
+  prop <- rmvnorm(1, mean = draws[t-1, ], sigma = scale_par*C)
+  if (u < exp(lpost(prop) - lpost(draws[t-1,]))) { # acceptance ratio
+    draws[t, ] = prop # accept #
+  } else { 
+    draws[t, ] = draws[t -1, ] }} # reject #
+
+tab.MCMC.b <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
+row.names(tab.MCMC.b) <- par_names; tab.MCMC.b
+(acc.b = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+
+# cat(knitr::kable(tab.MCMC.b, "html"), sep = "\n")
+tab.MCMC.b
+
+#### MCMC_b ####
+MCMC_b <- 
+{"
+priors_list <- list(
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_0 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_1 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_2 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_3 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_4 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_5 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_6 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_7 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_8 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_9 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_10 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_11 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_12 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_13 Prior
+  function(theta) dunif(theta, min = 1e-6, max = 40,  log = TRUE) # sigma_sq Prior
+)
+
+# Function to calculate the total log prior
+log_prior_func <- function(theta, priors_list) {
+  log_prior_values <- mapply(function(theta_val, prior_func) prior_func(theta_val), theta, priors_list)
+  sum(log_prior_values)
+}
+
+# Modify lprior to use the log_prior_func
+lprior <- function(pars) log_prior_func(pars, priors_list)
+
+# Modify lpost to include the new lprior
+lpost <- function(pars) llike(pars) + lprior(pars)
+
+for (t in 2:n.s) {
+  u = runif(1) 
+  prop <- rmvnorm(1, mean = draws[t-1, ], sigma = scale_par*C)
+  if (u < exp(lpost(prop) - lpost(draws[t-1,]))) { # acceptance ratio
+    draws[t, ] = prop # accept #
+  } else { 
+    draws[t, ] = draws[t -1, ] }} # reject #
+
+tab.MCMC <- t(apply(X=draws[-c(1:burnin),],MARGIN = 2,FUN = samp.o))
+row.names(tab.MCMC) <- par_names; tab.MCMC
+(acc = (apply(draws[-c(1:burnin),],2,function(x) length(unique(x))/length(x)))[1])
+"}
+
+code_callout(MCMC_b)
+
+#### Implementation (c) ####
+# LR Adaptive Scaling, n-chain, Burn-in, Thinning, Jeffrey's Prior #
+
+
+mh.mcmc.c <- function(n.s, start.p, start.hessian, burnin, seed = 23, initial_scale_par = 1, n.chain = 3, thinning = 1, par_names = NULL, learning_rate = 0.05, target_acc_rate = 0.234, target_range = 0.01, Adapt = TRUE){
+  np <- length(start.p)
+  set.seed(seed) 
+  
+  chains <- list()
+  scale_par_history <- vector("list", n.chain) # List to store scale_par history for each chain
+  accept_rate_history <- vector("list", n.chain)
+  
+  
+  for (j in 1:n.chain){
+    chain_draws = matrix(NA, n.s, np)
+    chain_draws[1, ] = start.p
+    acc_count = 0 # Initialize acc_count
+    scale_par <- initial_scale_par # Initialize scale parameter for each chain
+    C = -solve(start.hessian) * scale_par # Scale the covariance matrix
+    scale_par_vec <- numeric(n.s) 
+    accept_rate_vec <- numeric(n.s)
+    scale_par_vec[1] <- scale_par
+    
+    for (t in 2:n.s) {
+      u = runif(1) 
+      prop <- rmvnorm(1, mean = chain_draws[t-1, ], sigma = C)
+      accept_ratio = exp(lpost(prop) - lpost(chain_draws[t-1,]))
+      if (u < accept_ratio) {
+        chain_draws[t, ] = prop # accept
+          acc_count <- acc_count + 1
+      } else { 
+        chain_draws[t, ] = chain_draws[t -1, ] # reject
+      }
+      
+      current_acc_rate = acc_count / (t) 
+      # Adapt scale_par during burn-in
+      if ((t <= burnin) && Adapt) {
+        if (
+          # if under or over shooting target_range
+          !((abs(target_acc_rate - current_acc_rate) >= 0 &&
+             (abs(target_acc_rate - current_acc_rate)) <= target_range)) 
+          ){ # then update scale_par
+          scale_par <- scale_par * exp(learning_rate * (current_acc_rate - target_acc_rate))
+          C = -solve(start.hessian) * scale_par
+        } 
+      }
+      accept_rate_vec[t] <- current_acc_rate 
+      scale_par_vec[t] <- scale_par
+    }
+    
+    accept_rate_history[[j]] <- accept_rate_vec
+    scale_par_history[[j]] <- scale_par_vec 
+    
+    # Thinning and removing burn-in samples
+    chains[[j]] <- chain_draws[(burnin+1):n.s,][seq(1, n.s - burnin, thinning),]
+    
+    if(!is.null(par_names)){
+      colnames(chains[[j]]) <- par_names
+    }
+  }
+  
+  tab <- t(apply(X=do.call(rbind, chains),MARGIN = 2,FUN = samp.o))
+  final_acceptance_rates <- sapply(accept_rate_history, function(x) tail(x,1))
+  
+  return(
+    list(chains = chains,
+         tab = tab, 
+         final_acceptance_rates = final_acceptance_rates,
+         scale_par_history = scale_par_history,
+         accept_rate_history = accept_rate_history))
+}
+
+
+set.seed(23)
+burnin <- 1000
+mcmc.c <- mh.mcmc.c(n.s = n.s, start.p = opt$par, start.hessian = opt$hessian, burnin = burnin, initial_scale_par = 1, n.chain = 3, thinning = 20, target_range = 0.0005, par_names = par_names)
+
+
+mcmc.c$tab
+# cat(knitr::kable(mcmc.c$tab, "html"), sep = "\n")
+
+mcmc.c$final_acceptance_rates
+
+#### Thinning ####
+
+old_par <- par()
+par(mfrow = c(2,2), mar = c(4.5, 4.5, 2.5, 2),font.lab = 2)
+xacf <- list()
+for (i in 1:4){
+  xacf[[i]] <- acf(mcmc.c$chains[[1]][, i], plot = FALSE)
+  plot(xacf[[i]]$lag,xacf[[i]]$acf, type = "h", xlab = "Lag",ylab = "Autocorrelation", ylim = c(-0.1, 1),cex.lab = 1.3, main = par_names[i], cex.main = 1.5)
+}
+suppressWarnings(par(old_par))
+
+
+# par(mfrow = c(2, 2))
+# for (i in 1:4) {
+#   coda::autocorr.plot(mcmc.c$chains[[i]][, i],lag.max = 30,auto.layout = FALSE, ylim = c(-0.02, 1))
+#   title(main = paste0(par_names[i]),line = 0.8,cex.main = 0.95)
+# }
+# mtext(
+#   "Autocorrelation for first 4 Parameters",
+#   outer = TRUE,cex = 1,line = -1.5,font = 2
+#   )
+# par(mfrow = c(1, 1))
+
+#### Traceplots ####
+traceplot_mcmc <- function(mcmc_chains, param_indices = NULL, main_title = "", colors = NULL, par_names = NULL, ask = TRUE, ...){
+  n_chains <- length(mcmc_chains)
+  
+  # If specific parameters are not specified, plot all
+  if (is.null(param_indices)) {
+    param_indices <- 1:ncol(mcmc_chains[[1]])
+  }
+  
+  # Generate colors if not provided
+  if (is.null(colors) || length(colors) < n_chains) {
+    colors <- rainbow(n_chains)
+  }
+  
+  if(ask){
+    par(ask = TRUE)
+  }
+  
+  if(is.null(par_names)){
+    par_names <- paste("Parameter", param_indices)
+  }
+  
+  for (i in param_indices) {
+    plot(NULL, xlim = c(1, nrow(mcmc_chains[[1]])), ylim = range(sapply(mcmc_chains, function(x) x[, i])), 
+         xlab = "Iteration", ylab = par_names[i], main = paste(main_title, par_names[i]), ...)
+    
+    for (j in 1:n_chains) {
+      lines(mcmc_chains[[j]][, i], col = colors[j], ...)
+    }
+  }
+  if(ask){
+    par(ask = FALSE)
+  }
+}
+
+# Example usage
+par(mfrow = c(2,2))
+traceplot_mcmc(mcmc.c$chains, param_indices = 1:4, par_names = par_names, ask = FALSE,cex.lab = 1.4, cex.main = 1.6)
+par(mfrow = c(1,1))
+
+
+#### MCMC Acceptance Rate Scale Parameter for (c) ####
+runon <- 2000 # plotting a little past burn to see how chains continue to shift 
+par(mfrow = c(2,2));cex.lab <- 1.35
+plot(NULL, type = "n", ylim = c(0,0.4), xlim = c(1,burnin + runon), ylab = "Accept Rate", xlab = "Iterations", cex.lab = cex.lab)
+lines(mcmc.c$accept_rate_history[[1]], type = "l", col = "red")
+lines(mcmc.c$accept_rate_history[[2]], type = "l", col = "blue")
+lines(mcmc.c$accept_rate_history[[3]], type = "l", col = "green")
+abline(h = 0.234)
+plot(NULL, type = "n", ylim = c(0,0.4), xlim = c(1,n.s), ylab = "Accept Rate", xlab = "Iteration", cex.lab = cex.lab)
+lines(mcmc.c$accept_rate_history[[1]], type = "l", col = "red")
+lines(mcmc.c$accept_rate_history[[2]], type = "l", col = "blue")
+lines(mcmc.c$accept_rate_history[[3]], type = "l", col = "green")
+abline(h = 0.234)
+plot(NULL, type = "n", ylim = c(0,1), xlim = c(1,burnin + runon), ylab = "Scale Parameter", xlab = "Iteration", cex.lab = cex.lab)
+lines(mcmc.c$scale_par_history[[1]], type = "l", col = "red")
+lines(mcmc.c$scale_par_history[[2]], type = "l", col = "blue")
+lines(mcmc.c$scale_par_history[[3]], type = "l", col = "green")
+plot(NULL, type = "n", ylim = c(0,1), xlim = c(1,n.s), ylab = "Scale Parameter", xlab = "Iteration", cex.lab = cex.lab)
+lines(mcmc.c$scale_par_history[[1]], type = "l", col = "red")
+lines(mcmc.c$scale_par_history[[2]], type = "l", col = "blue")
+lines(mcmc.c$scale_par_history[[3]], type = "l", col = "green")
+par(mfrow = c(1,1))
+
+
+#### MCMC_c ####
+MCMC_c <- 
+{'
+mh.mcmc.c <- function(n.s, start.p, start.hessian, burnin, seed = 23, initial_scale_par = 1, n.chain = 3, thinning = 1, par_names = NULL, learning_rate = 0.05, target_acc_rate = 0.234, target_range = 0.01, Adapt = TRUE){
+  np <- length(start.p)
+  set.seed(seed) 
+  
+  chains <- list()
+  scale_par_history <- vector("list", n.chain) # List to store scale_par history for each chain
+  accept_rate_history <- vector("list", n.chain)
+  
+  
+  for (j in 1:n.chain){
+    chain_draws = matrix(NA, n.s, np)
+    chain_draws[1, ] = start.p
+    acc_count = 0 # Initialize acc_count
+    scale_par <- initial_scale_par # Initialize scale parameter for each chain
+    C = -solve(start.hessian) * scale_par # Scale the covariance matrix
+    scale_par_vec <- numeric(n.s) 
+    accept_rate_vec <- numeric(n.s)
+    scale_par_vec[1] <- scale_par
+    
+    for (t in 2:n.s) {
+      u = runif(1) 
+      prop <- rmvnorm(1, mean = chain_draws[t-1, ], sigma = C)
+      accept_ratio = exp(lpost(prop) - lpost(chain_draws[t-1,]))
+      if (u < accept_ratio) {
+        chain_draws[t, ] = prop # accept
+          acc_count <- acc_count + 1
+      } else { 
+        chain_draws[t, ] = chain_draws[t -1, ] # reject
+      }
+      
+      current_acc_rate = acc_count / (t) 
+      # Adapt scale_par during burn-in
+      if ((t <= burnin) && Adapt) {
+        if (
+          # if under or over shooting target_range
+          !((abs(target_acc_rate - current_acc_rate) >= 0 &&
+             (abs(target_acc_rate - current_acc_rate)) <= target_range)) 
+          ){ # then update scale_par
+          scale_par <- scale_par * exp(learning_rate * (current_acc_rate - target_acc_rate))
+          C = -solve(start.hessian) * scale_par
+        } 
+      }
+      accept_rate_vec[t] <- current_acc_rate 
+      scale_par_vec[t] <- scale_par
+    }
+    
+    accept_rate_history[[j]] <- accept_rate_vec
+    scale_par_history[[j]] <- scale_par_vec 
+    
+    # Thinning and removing burn-in samples
+    chains[[j]] <- chain_draws[(burnin+1):n.s,][seq(1, n.s - burnin, thinning),]
+    
+    if(!is.null(par_names)){
+      colnames(chains[[j]]) <- par_names
+    }
+  }
+  
+  tab <- t(apply(X=do.call(rbind, chains),MARGIN = 2,FUN = samp.o))
+  final_acceptance_rates <- sapply(accept_rate_history, function(x) tail(x,1))
+  
+  return(
+    list(chains = chains,
+         tab = tab, 
+         final_acceptance_rates = final_acceptance_rates,
+         scale_par_history = scale_par_history,
+         accept_rate_history = accept_rate_history))
+}
+
+
+set.seed(23)
+burnin <- 1000
+mcmc.c <- mh.mcmc.c(n.s = n.s, start.p = opt$par, start.hessian = opt$hessian, burnin = burnin, initial_scale_par = 1, n.chain = 3, thinning = 20, target_range = 0.0005)
+'}
+
+code_callout(MCMC_c)
+
+#### Implementation (d) ####
+# RAM Adaptive scaling, single chain, Burn-in, no-Thinning, Likelihood only #
+# posterior distribution is inferred directly from the likelihood and the proposal distribution.
+
+# https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html
+initial_theta <- par0 
+S_initial <- diag(1, k + 2)   
+
+metropolis.d <- function(y, X, theta0, S, n_iter, n_burnin, adapt = FALSE) {
+  
+  p <- length(theta0)
+  theta <- matrix(NA, n_iter, p)
+  accept <- numeric(n_iter)
+  mu <- X %*% theta0[1:(p - 1)]
+  posterior <- sum(dnorm(y, mean = mu, sd = theta0[p], log = TRUE))
+  theta[1, ] <- theta0
+  
+  for (i in 2:n_iter){
+    u <- rnorm(p)
+    theta_prop <- theta[i - 1, ] + S %*% u
+    if (theta_prop[p] > 0) {
+      mu <- X %*% theta_prop[1:(p - 1)]
+      posterior_prop <- sum(dnorm(y, mean = mu, sd = theta_prop[p], log = TRUE))
+      acceptance_prob <- min(1, exp(posterior_prop - posterior))
+      if (runif(1) < acceptance_prob) {
+        accept[i] <- 1
+        theta[i, ] <- theta_prop
+        posterior <- posterior_prop
+      }else{
+        theta[i, ] <- theta[i - 1, ]
+      }
+    } else {
+      theta[i, ] <- theta[i - 1, ]
+      acceptance_prob <- 0
+    }
+    if(adapt & i <= n_burnin) {
+      S <- ramcmc::adapt_S(S, u, acceptance_prob, i - 1)
+    }
+  }
+  list(theta = theta[(n_burnin + 1):n_iter, ], S = S,
+       acceptance_rate = sum(accept[(n_burnin + 1):n_iter]) / (n_iter - n_burnin))
+}
+
+mcmc.d <- metropolis.d(y, X, initial_theta, S_initial, 1e4, 1e4 / 2)
+mcmc_adapt.d <- metropolis.d(y, X, initial_theta, S_initial, 1e4, 1e4 / 2, adapt = TRUE)
+
+mcmc.d $acceptance_rate
+mcmc_adapt.d$acceptance_rate
+
+mcmc_adapt_tab.d <- t(apply(X=mcmc_adapt.d$theta,MARGIN = 2,FUN = samp.o))
+rownames(mcmc_adapt_tab.d) <- c(paste0("beta_", 0:13),"sigma")
+mcmc_adapt_tab.d
+
+#### Implementation (e) ####
+# RAM Adaptive scaling, Burn-in, no-Thinning, Uniform and Normal priors #
+
+log_likelihood_func <- function(y, X, theta) {
+  mu <- X %*% theta[1:(length(theta) - 1)]
+  sigma <- theta[length(theta)]  
+  sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))  # Use square root of variance as standard deviation
+}
+
+priors_list <- list(
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_0 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_1 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_2 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_3 Prior 
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_4 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_5 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_6 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_7 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_8 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_9 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_10 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_11 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_12 Prior
+  function(theta) dnorm(theta, mean = 0, sd = 1000, log = TRUE),  # beta_13 Prior
+  function(theta) dunif(theta, min = 1e-6, max = 40,  log = TRUE) # sigma Prior
+)
+
+log_prior_func <- function(theta, priors_list) {
+  log_prior_values <- mapply(function(theta_val, prior_func) prior_func(theta_val), theta, priors_list)
+  sum(log_prior_values)
+}
+
+metropolis.e <- function(y, X, theta0, S, n_iter, n_burnin, adapt = FALSE,
+                       log_likelihood_func, log_prior_func,priors_list) {
+  
+  p <- length(theta0)
+  theta <- matrix(NA, n_iter, p)
+  accept <- numeric(n_iter)
+  
+  # Calculate initial posterior (likelihood + prior)
+  log_likelihood <- log_likelihood_func(y, X, theta0)
+  log_prior <- log_prior_func(theta0, priors_list)
+  posterior <- log_likelihood + log_prior
+  
+  theta[1, ] <- theta0
+  
+  for (i in 2:n_iter){
+    u <- rnorm(p)
+    theta_prop <- theta[i - 1, ] + S %*% u
+    if (theta_prop[p] > 0) {
+      
+      # Calculate proposed posterior (likelihood + prior)
+      log_likelihood_prop <- log_likelihood_func(y, X, theta_prop)
+      log_prior_prop <- log_prior_func(theta_prop, priors_list)
+      posterior_prop <- log_likelihood_prop + log_prior_prop
+      
+      acceptance_prob <- min(1, exp(posterior_prop - posterior))
+      if (runif(1) < acceptance_prob) {
+        accept[i] <- 1
+        theta[i, ] <- theta_prop
+        posterior <- posterior_prop
+      }else{
+        theta[i, ] <- theta[i - 1, ]
+      }
+    } else {
+      theta[i, ] <- theta[i - 1, ]
+      acceptance_prob <- 0
+    }
+    if(adapt & i <= n_burnin) {
+      S <- ramcmc::adapt_S(S, u, acceptance_prob, i - 1)
+    }
+  }
+  list(theta = theta[(n_burnin + 1):n_iter, ], S = S,
+       acceptance_rate = sum(accept[(n_burnin + 1):n_iter]) / (n_iter - n_burnin))
+}
+
+set.seed(23)
+mcmc_adapt.e <- metropolis.e(y, X, initial_theta, S_initial, 1e5, 1e4 / 2, adapt = TRUE,log_likelihood_func, log_prior_func,priors_list)
+
+mcmc_adapt.e$acceptance_rate
+
+mcmc_adapt_tab.e <- t(apply(X=mcmc_adapt.e$theta,MARGIN = 2,FUN = samp.o))
+rownames(mcmc_adapt_tab.e) <- c(paste0("beta_", 0:13),"sigma")
+mcmc_adapt_tab.e
+(mcmc_adapt_tab.e[15,1])^2 # sigma_sq

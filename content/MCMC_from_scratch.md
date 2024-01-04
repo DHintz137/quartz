@@ -152,9 +152,11 @@ Once these five steps are completed, we can begin to write the MCMC algorithm.
 <a name="#1-reading-in-the-data"></a>
 ### 1. Reading in the Data
 ```r
-dat = read.csv("data/bodyfat.csv");n = nrow(dat)
+library(here)
+dat = read.csv(here("data","bodyfat.csv"));n = nrow(dat)
 y = dat[,1]; X = as.matrix(cbind(Int = rep(1,n),dat[,-1]))
-p = ncol(X); ee = 1e-16 
+p = ncol(X); n.s = 100000; k = p - 1; ee = 1e-16
+par_names <- c(paste0("beta_", 0:13),"sigma_sq")
 ```
 
 &nbsp;
@@ -376,8 +378,6 @@ First, I will present the code and then explain the details see the foldable cod
 > ```r
 > library(mvtnorm)
 > np <- length(opt$par)
-> lprior <- function(pars) {sigma_sq = max(pars[np],ee); log(1 /(sigma_sq))}
-> lpost <- function(pars) llike(pars) + lprior(pars)
 > n.s = 100000; draws = matrix(NA, n.s, np)
 > draws[1, ] = opt$par; C = -solve(opt$hessian)
 > scale_par = .45; burnin = 500; set.seed(23) 
@@ -555,7 +555,7 @@ tab.MCMC.a
 
 > [!tip] Reminder
 > 
->  The posterior distribution is what we get out of a Bayesian analysis; we get one distribution for each parameter. Hence see <a href="#plotly-weight-histogram">beta_3 Posterior</a> below.
+>  The posterior distribution is what we get out of a Bayesian analysis; we get one distribution for each parameter, **Not**, a single point estimate, as is the case with frequentist statistics. Hence see <a href="#plotly-weight-histogram">beta_3 Posterior</a> below.
 
 Thus, We can plot the posterior distribution for Weight ($\beta_3$), in which case we can see that the mode of the distribution is similar to the mean point estimate presented in the table above (-0.036). 
 
@@ -982,7 +982,7 @@ mcmc.c$tab
 <body>
 </html>
 
-Notice that the point estimate we get from the `samp.o` of our posterior distributions is again different from [Implementation (a)](#implementation-a) and [Implementation (b)](#implementation-b).
+Notice that the point estimate we get from the `samp.o` of our posterior distributions is again different from [Implementation (a)](#implementation-a) and [Implementation (b)](#implementation-b). Note, the acceptance rates for the three chains where `0.109`, `0.182`, and `0.107`.
 
 <a name="Thinning"></a> 
 ### Thinning 
@@ -1029,14 +1029,29 @@ For reference, the image below shows a good mixing of the first chain, indicatin
 
 &nbsp;
 
-> [!note] Note
+> [!note] When are MCMC results usable?
 >
 > If MCMC did not converge, the results are not usable; results are also not usable if there is high autocorrelation shown in the autocorrelation plot.
 
 <a name="Adaptive Scaling"></a> 
 ### Adaptive Scaling 
 
-Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I named  `scale_par` i the code), which in terms scales the variance-covariance matrix  `C`. The purpose of this scaling is specific to the accept-reject methodology inherent in Metropolis-Hastings MCMC. As there is no knowing what the Acceptance rate will be before running the algorithm as the process is stochastic and is subject to your data, likelihood, and priors. Notice in  [Implementation (a)](#implementation-a) we set `scale_par`, but in practice, this involved rerunning MCMC multiple times adjusting scale_par each run, trying to get an acceptance rate close to the ideal acceptance rate of 0.234. As shown in <a href="#accept-and-scale">MCMC Acceptance Rate Scale Parameter for (c)</a> below, using a learning rate we are able to adjust `scale_par` to get the acceptance rate to hover around 0.234, however, after burnin, while `scale_par` is no longer being adjusted the acceptance rate continues to drift below 0.0234 unit it converges as part of the chains. Hence, adaptive scaling is not perfect, although we can lift the acceptance rate from minuscule digits below 0.001 to above 0.1, we still don't land within a very close distance of the ideal acceptance rate of 0.234. 
+Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I named  `scale_par` i the code), which in terms scales the variance-covariance matrix  `C`. The purpose of this scaling is specific to the accept-reject methodology inherent in Metropolis-Hastings MCMC. As there is no knowing what the Acceptance rate will be before running the algorithm as the process is stochastic and is subject to your data, likelihood, and priors. Notice in  [Implementation (a)](#implementation-a) we set `scale_par`, but in practice, this involved rerunning MCMC multiple times adjusting scale_par each run, trying to get an acceptance rate close to the ideal acceptance rate of 0.234. As shown in <a href="#accept-and-scale">MCMC Acceptance Rate Scale Parameter for (c)</a>.
+
+Now we are adjusting `scale_par` dynamically based on the acceptance rate of the proposals during the sampling process. The idea is to increase `scale_par` if the acceptance rate is too high (indicating that the chain is making too many small, cautious steps) and decrease it if the acceptance rate is too low (indicating that the chain is making too many large, risky steps). `scale_par` is adapted during the burn-in period. The adaptation is based on the difference between the current acceptance rate and the target acceptance rate (`target_acc_rate` of 0.234). The `learning_rate` controls the speed of adaptation. After the burn-in period, the `scale_par` remains constant for the rest of the sampling.  This approach should help achieve a better balance between exploration and exploitation in the parameter space, improving the efficiency of the MCMC chain.
+
+However, there is a caveat: after burn-in,  `scale_par` is no longer being adjusted, and yet the acceptance rate continues to drift below 0.0234 until each of the chains converges. Perhaps you might think to yourself, ``*Then why don't you leave `scale_par` to be adjusted after burn-in as well, then our acceptance rate will still hover close to 0.234*"; no doubt some readers will know the answer. We can't continue to adjust `scale_par` after burn-in, or we would be breaking the Markov Property subsequently, making our results theoretically invalid; moreover, the chains might never converge if `C` was continually adjusted by `scale_par.` 
+
+
+> [!note] The Markov Property
+>
+> One of the fundamental properties of MCMC algorithms is the Markov property, which states that the next state of the chain depends only on the current state and not on how it arrived there.
+>  $$
+> P\left(X_{t+n}=x \mid X_t, X_{t-1}, \ldots, X_{t-k}\right)=P\left(X_{t+n}=x \mid X_t\right)
+> $$
+
+
+Hence, adaptive scaling is not perfect; although we can lift the acceptance rate from minuscule digits below 0.001 to above 0.1 (see the top right plot of <a href="#accept-and-scale">MCMC Acceptance Rate Scale Parameter for (c)</a>), we still don't land within a very close distance of the ideal acceptance rate of 0.234. Really, what we have achieved is giving the chains a better starting location post-burn-in in terms of acceptance rates so that when it does converge, it's hopefully a stone's throw away from 0.234. From my research, other Adaptive scaling methods have the same problem (see [RAM](https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html)).
 
 <figure id="accept-and-scale">
   <img src="pictures/Adapt.png" width="800" height="500" alt="Description of Image">
@@ -1047,6 +1062,9 @@ Adaptive Scaling is a hand-off approach to adjusting a scaling term (which I nam
 >
 > A more popular method for Adaptive scaling is Robust Adaptive Metropolis ([RAM](https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html)). However, to avoid the need for Adaptive Scaling altogether, Gibbs Sampling is another very popular MCMC procedure that uses conditioning to avoid an acceptance rate and, subsequently, the need for Adaptive Scaling.
 
+### Resources 
+
+All of the code is available in the directory `content/scripts/Metropolis_Hastings_MCMC_from_Scratch` at my [repo](https://github.com/DHintz137/quartz/tree/v4/content), with bonus content of implementations **(d)**, and **(e)**.
 
 <!--FOOTNOTES-->
 [^1]: [Givens and Hoeting, 2006](https://onlinelibrary.wiley.com/doi/book/10.1002/9781118555552)
