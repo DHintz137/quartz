@@ -30,7 +30,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Darkmode(),
     Component.DesktopOnly(Component.RecentNotes({
       title: "Most recent",
-      limit: 5
+      limit: 2
     })),
     Component.DesktopOnly(Component.Explorer()),
   ],
