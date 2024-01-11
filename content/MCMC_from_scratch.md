@@ -1,5 +1,5 @@
 ---
-title: Metropolis-Hastings MCMC from Scratch
+title: Metropolis-Hastings MCMC from Scratch ✨
 date: 2023-12-28
 tags:
   - Bayesian
