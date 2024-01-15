@@ -44,12 +44,12 @@ const config: QuartzConfig = {
   },
   plugins: {
     transformers: [
-      Plugin.Poetry(),
       Plugin.FrontMatter(),
       Plugin.TableOfContents(),
       Plugin.CreatedModifiedDate({
         priority: ["frontmatter", "filesystem"], // you can add 'git' here for last modified from Git but this makes the build slower
       }),
+      Plugin.Poetry(),
       Plugin.Latex({ renderEngine: "katex" }),
       Plugin.SyntaxHighlighting(),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
