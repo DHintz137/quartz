@@ -149,7 +149,7 @@ $$
 
 Once these five steps are completed, we can begin to write the MCMC algorithm. 
 
-<a name="#1-reading-in-the-data"></a>
+<a name="#reading-in-the-data"></a>
 ### 1. Reading in the Data
 ```r
 library(here)
@@ -225,7 +225,7 @@ The data is on the percent body fat for 252 adult males, where the objective is 
 </html>
 
 
-
+<a name="write-our-own-sample-function"></a> 
 ### 2. Write our own Sample Function 
 
 Later, we will need a function to summarise the results from the posterior distributions, see `samp.o`.
@@ -243,6 +243,8 @@ samp.o <- function(t.s) {
 Now we have our data, we need to specify a Likelihood Function.
 
 &nbsp;
+
+<a name="specify-log-likelihood-function"></a> 
 ### 3. Specify Log-Likelihood Function 
 
 Because we have a numerical response, it is reasonable to assume that our population resposne is normally distributed:
@@ -263,6 +265,8 @@ llike <- function(pars) {
 Next, we need to get estimates to use as our starting values as MCMC is sent to where they start chains for each parameter. 
 
 &nbsp;
+
+<a name="use-optimisation-to-get-starting-values"></a> 
 ### 4. Use Optimisation to Get Starting Values
 ```r
 par0 = c(mean(y),rep(0,p-1),3)
@@ -337,6 +341,7 @@ opt$par
 
 &nbsp;
 
+<a name="specify-prior-function"></a> 
 ### 5. Specify Prior Function 
 
 Using the Jeffreys prior (an improper prior), we can implement a Random Walk Chain with Metropolis-Hastings Markov Chain Monte Carlo to sample the Normal target distribution where Jeffreys prior is defined as 
@@ -353,7 +358,8 @@ lprior <- function(pars) {sigma_sq = max(pars[np],ee); log(1 /(sigma_sq))}
 
 &nbsp;
 
-### 5. Specify Posterior Function
+<a name="specify-posterior-function"></a> 		  
+### 6. Specify Posterior Function
 
 The Posterior distribution is defined as 
 $$
@@ -372,7 +378,7 @@ lpost <- function(pars) llike(pars) + lprior(pars)
 
 We will start off with a simpler implementation, which we will denote [Implementation (a)](#implementation-a) with manual scaling, Single Chain, Burn-in, No thinning,  and a Jeffrey's Prior.
 
-First, I will present the code and then explain the details see the foldable code chunk **(a)**, below:
+First, I will present the code and then explain the details see the foldable code chunk **(a)**, below (**Note:  the box below is a folded code chunk; click the arrow to expand** )
 
 > [!info]- (a): manual scaling, Single Chain, Burn-in, No thinning,  and a Jeffrey's Prior
 > ```r
@@ -987,7 +993,7 @@ Notice that the point estimate we get from the `samp.o` of our posterior distrib
 <a name="Thinning"></a> 
 ### Thinning 
 
-Thinning is a process that is done to help reduce the autocorrelation present in the chains; if there is severe autocorrelation, then the results are not usable for inference. Autocorrelation in the chains is usually diagnosed with an autocorrelation plot. Looking at the <a href="#autocorrelation-plot-for-c">Traceplot for (c)</a>, we can see that there is still some concerning autocorrelation (we want almost no spikes for the first half dozen lags); thus, via bumping up the argument `thinning` to be something higher than 20, say 40, we might resolve the issue of autocorrelation. 
+Thinning is a process that is done to help reduce the autocorrelation present in the chains; if there is severe autocorrelation, then the results are not usable for inference. Autocorrelation in the chains is usually diagnosed with an autocorrelation plot. Looking at the <a href="#autocorrelation-plot-for-c">autocorrelation for (c)</a>, we can see that there is still some concerning autocorrelation (we want almost no spikes for the first half dozen lags); thus, via bumping up the argument `thinning` to be something higher than 20, say 40, we might resolve the issue of autocorrelation. 
 
 ```r
 old_par <- par()
@@ -1062,6 +1068,7 @@ Hence, adaptive scaling is not perfect; although we can lift the acceptance rate
 >
 > A more popular method for Adaptive scaling is Robust Adaptive Metropolis ([RAM](https://cran.r-project.org/web/packages/ramcmc/vignettes/ramcmc.html)). However, to avoid the need for Adaptive Scaling altogether, Gibbs Sampling is another very popular MCMC procedure that uses conditioning to avoid an acceptance rate and, subsequently, the need for Adaptive Scaling.
 
+<a name="resources"></a> 
 ### Resources 
 
 All of the code is available in the directory `content/scripts/Metropolis_Hastings_MCMC_from_Scratch` at my [repo](https://github.com/DHintz137/quartz/tree/v4/content), with bonus content of implementations **(d)**, and **(e)**.
